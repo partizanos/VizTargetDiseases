@@ -3,7 +3,7 @@ var data;
 var api = otApi()
    .prefix ("https://www.targetvalidation.org/api/");
 var url = api.url.associations({
-   diseaes: "EFO_0001071",
+   diseases: "EFO_0001071",
    outputstructure: "flat",
    facets: false,
    size: 10000
