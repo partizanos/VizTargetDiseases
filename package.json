@@ -2,7 +2,7 @@
   "name": "viz_diseases",
   "version": "1.0.0",
   "description": "",
-  "main": "bundle.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,5 +15,24 @@
   "bugs": {
     "url": "https://github.com/partizanos/VizTargetDiseases/issues"
   },
-  "homepage": "https://github.com/partizanos/VizTargetDiseases#readme"
+  "homepage": "https://github.com/partizanos/VizTargetDiseases#readme",
+  "devDependencies": {
+    "del": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-browserify": "^0.5.1",
+    "gulp-gzip": "^1.4.0",
+    "gulp-jshint": "^2.0.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.3.1",
+    "gulp-uglify": "^1.5.3",
+    "gulp-watch": "^4.3.6",
+    "jshint": "^2.9.2",
+    "mkdirp": "^0.5.1",
+    "path": "^0.12.7",
+    "rename": "^1.0.3"
+  },
+  "dependencies": {
+    "cttv.api": "0.0.5",
+    "lodash": "^4.13.1"
+  }
 }
