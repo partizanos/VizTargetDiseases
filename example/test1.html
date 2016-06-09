@@ -6,14 +6,32 @@
 </head>
 
 <body>
+    <select name="types" id="changeType">
+        <option value="">All</option>
+        <option value="shared-targets">Shared targets</option>
+        <option value="shared-phenotypes">Shared phenotypes</option>
+    </select>
     <div id="mydiv" style="padding:30px; position:relative"></div>
 
     <script>
     var v = vis()
         .size(500);
 
-    console.log(v.size());
-
     v(document.getElementById("mydiv"));
+
+    d3.select("#changeType")
+        .on("change", function () {
+            console.log(this.value);
+            v.filter_type(this.value);
+        })
+
+    // setTimeout(function () {
+    //     v.filter_type("shared-phenotype");
+    // }, 1000);
+    //
+    // setTimeout(function () {
+    //     v.filter_type(null);
+    // }, 2000);
+
     </script>
 </body>
