@@ -47,7 +47,7 @@ gulp.task('lint', function() {
 
 
 gulp.task('watch', function() {
-    gulp.watch(['./src/**/*.js','./src/**/scss/*.scss'], ['build-browser', 'lint']);
+    gulp.watch(['./src/**/*.js','./src/**/scss/*.scss','index.scss'], ['build-browser', 'lint']);
 });
 
 

@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <head>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="../build/viz_diseases.js"></script>
 </head>
 
 <body>
-    <script>
-    vis("from test!");
-    </script>
+    <div id="mydiv"></div>
 
+    <script>
+    var v = vis()
+        .size(500);
+
+    console.log(v.size());
+
+    v(document.getElementById("mydiv"));
+    </script>
 </body>
