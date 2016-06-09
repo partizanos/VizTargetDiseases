@@ -54,20 +54,19 @@ var vis = function () {
         console.log(url);
 
         d3.json("../data/sample.json", function(error, resp) {
-            // console.log(root[0]
-        // )})
+            var data = resp.data;
+            console.log(data);
 
         // api.call(url)
         //     .then (function (resp) {
-                console.log(resp.body.data);
                 var stepRad = 23; // grades
                 // var step = 100;
                 // var stepRadians = 2 * Math.PI / step;
                 var currAngle = 0;
                 var radius = config.size/2;
 
-                for (var i=1; i<resp.body.data.length; i++) {
-                    var p = resp.body.data[i];
+                for (var i=1; i<data.length; i++) {
+                    var p = data[i];
                     var coords = point(circleScale(1 - p.value), currAngle);
                     // currAngle += stepRadians;
                     currAngle += (stepRad * 2 * Math.PI / 360);
@@ -77,7 +76,7 @@ var vis = function () {
                 }
 
                 points = svg.selectAll(".points")
-                    .data(resp.body.data, function (d) {
+                    .data(data, function (d) {
                         return d.object + "-"+ d.subject;
                     })
                     .enter()
