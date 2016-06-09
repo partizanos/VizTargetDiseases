@@ -47,10 +47,13 @@ var vis = function () {
         });
         console.log(url);
 
-        api.call(url)
-            .then (function (resp) {
-                console.log(resp.body.data);
-            });
+        d3.json("../data/sample.json", function(error, root) {
+            console.log(root[0]
+        )})
+        // api.call(url)
+        //     .then (function (resp) {
+        //         console.log(resp.body.data);
+        //     });
 
     };
 
