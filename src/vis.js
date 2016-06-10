@@ -40,7 +40,7 @@ var vis = function () {
 
         var circlesSize = [0, 0.2, 0.4, 0.6, 0.8, 1.0];
         var circles = graph
-            .selectAll(".circle")
+            .selectAll(".circleGuide")
             .data(circlesSize)
             .enter()
             .append("circle")
@@ -51,7 +51,7 @@ var vis = function () {
             })
             .attr("stroke", "gray")
             .attr("fill", "none")
-            .attr("class", "circle");
+            .attr("class", "circleGuide unselected");
 
         // get data
         // var url = api.url.diseaseRelation({
@@ -78,12 +78,13 @@ var vis = function () {
                     currAngle += (stepRad * 2 * Math.PI / 360);
                 }
 
-                points = graph.selectAll(".points")
+                points = graph.selectAll(".openTargets_d-d_overview_node")
                     .data(data, function (d) {
                         return d.object + "-" + d.subject;
                     })
                     .enter()
                     .append("circle")
+                    .attr("class", "openTargets_d-d_overview_node")
                     .attr("cx", function (d) {
                         return d.x;
                     })
@@ -92,6 +93,8 @@ var vis = function () {
                     })
                     .attr("r", 5)
                     .attr("fill", "navy")
+                    .on("mouseout", unselect)
+                    .on("mouseover", select)
                     .on("click", function (d) {
                         console.log(d);
                          var obj = {};
@@ -121,7 +124,7 @@ var vis = function () {
                     });
 
 
-                labels = graph.selectAll(".label")
+                labels = graph.selectAll(".openTargets_d-d_overview_label")
                     .data(data, function (d) {
                         return d.object + "-" + d.subject;
                     })
@@ -134,7 +137,7 @@ var vis = function () {
 
                         return "translate(" + x + "," + y + ")";
                     })
-                    .attr("class", "label")
+                    .attr("class", "openTargets_d-d_overview_label")
                     .append("text")
                     .style("font-size", "10px")
                     .style("text-anchor", function (d) {
@@ -153,14 +156,17 @@ var vis = function () {
                             return "rotate(" + ((grades % 360) + 180) + ")";
                         }
                         return "rotate(" + (grades % 360) + ")";
-                    });
+                    })
+                    .on("mouseover", select)
+                    .on("mouseout", unselect);
 
-                links = graph.selectAll("links")
+                links = graph.selectAll(".openTargets_d-d_overview_link")
                     .data(data, function (d) {
                         return d.object + "-" + d.subject;
                     })
                     .enter()
                     .append("line")
+                    .attr("class", "openTargets_d-d_overview_link selected")
                     .attr("x1", function (d) {
                         return d.x;
                     })
@@ -178,6 +184,72 @@ var vis = function () {
             });
 
     };
+
+    // private methods
+    function select (d) {
+        /*jshint validthis: true */
+        var selectNode = this;
+        links
+            .each (function (l) {
+                var checkLink = this;
+                if (d.object === l.object) {
+                    d3.select(checkLink)
+                        .classed("unselected", false)
+                        .classed("selected", true);
+                } else {
+                    d3.select(checkLink)
+                        .classed("selected", false)
+                        .classed("unselected", true);
+                }
+            });
+        labels
+            .each (function (l) {
+                var checkLabel = this;
+                if (d.object === l.object) {
+                    d3.select(checkLabel)
+                        .classed("unselected", false)
+                        .classed("selected", true);
+                } else {
+                    d3.select(checkLabel)
+                        .classed("selected", false)
+                        .classed("unselected", true);
+                }
+            });
+        points
+            .each(function (p) {
+                var checkNode = this;
+                if (p.object === d.object) {
+                    d3.select(checkNode)
+                        .classed("unselected", false)
+                        .classed("selected", true);
+                } else {
+                    d3.select(checkNode)
+                        .classed("selected", false)
+                        .classed("unselected", true);
+                }
+            });
+    }
+
+    function unselect () {
+        links
+            .each(function () {
+                d3.select(this)
+                    .classed("selected", true)
+                    .classed("unselected", false);
+            });
+        labels
+            .each(function () {
+                d3.select(this)
+                    .classed("selected", true)
+                    .classed("unselected", false);
+            });
+        points
+            .each(function () {
+                d3.select(this)
+                    .classed("selected", true)
+                    .classed("unselected", false);
+            });
+    }
 
     function point (l, r) {
         var x = l * Math.cos(r);
