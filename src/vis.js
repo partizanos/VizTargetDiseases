@@ -1,5 +1,6 @@
 var cttvApi = require('cttv.api');
-var tooltip = require('tnt.tooltip');
+var tntTooltip = require('tnt.tooltip');
+var flowerView = require("cttv.flowerView");
 
 var vis = function () {
     "use strict";
@@ -33,25 +34,35 @@ var vis = function () {
             .append("g")
             .attr("transform", "translate(" + (radius + labelSize) + "," + (radius + labelSize) + ")");
 
-        // draw circles
+        // draw circles / rings
+
         var circleScale = d3.scale.linear()
             .domain([0, 1])
             .range([0, graphSize/2]);
 
+        var circleColorScale = d3.scale.linear()
+            .domain([0,1])
+            .range([d3.rgb(0,82,163), d3.rgb(182,221,252)]);
+            //.range(["#0000FF", "#2ECCFA"]);
+
         var circlesSize = [0, 0.2, 0.4, 0.6, 0.8, 1.0];
-        var circles = graph
-            .selectAll(".circleGuide")
-            .data(circlesSize)
+
+        var rings = graph
+            .selectAll(".rings")
+            .data(circlesSize.slice(0,circlesSize.length-1))
             .enter()
-            .append("circle")
-            .attr("cx", 0)
-            .attr("cy", 0)
-            .attr("r", function (d) {
-                return circleScale(d);
+            .append("path")
+            .attr("d", function (d, i) {
+                var arc = d3.svg.arc()
+                    .innerRadius(circleScale(circlesSize[i]))
+                    .outerRadius(circleScale(circlesSize[i+1]))
+                    .startAngle(0) //converting from degs to radians
+                    .endAngle(2*Math.PI); //just radians
+                return arc(d, i);
             })
-            .attr("stroke", "gray")
-            .attr("fill", "none")
-            .attr("class", "circleGuide unselected");
+            .attr("fill", function (d, i) {
+                return circleColorScale(circlesSize[i]);
+            });
 
         // get data
         // var url = api.url.diseaseRelation({
@@ -78,6 +89,28 @@ var vis = function () {
                     currAngle += (stepRad * 2 * Math.PI / 360);
                 }
 
+
+                links = graph.selectAll(".openTargets_d-d_overview_link")
+                    .data(data, function (d) {
+                        return d.object + "-" + d.subject;
+                    })
+                    .enter()
+                    .append("line")
+                    .attr("class", "openTargets_d-d_overview_link selected")
+                    .attr("x1", function (d) {
+                        return d.x;
+                    })
+                    .attr("y1", function(d) {
+                        return d.y;
+                    })
+                    .attr("x2", function(d) {
+                        return graphSize/2 * Math.cos(d.angle);
+                    })
+                    .attr("y2", function(d) {
+                        return graphSize/2 * Math.sin(d.angle);
+                    })
+                    .style("stroke", "navy");
+
                 points = graph.selectAll(".openTargets_d-d_overview_node")
                     .data(data, function (d) {
                         return d.object + "-" + d.subject;
@@ -95,33 +128,7 @@ var vis = function () {
                     .attr("fill", "navy")
                     .on("mouseout", unselect)
                     .on("mouseover", select)
-                    .on("click", function (d) {
-                        console.log(d);
-                         var obj = {};
-                         obj.header = d.subject;
-                         obj.rows = [];
-                         obj.rows.push({
-                             "label" : "subject",
-                             "value" : d.subject
-                         });
-                         obj.rows.push({
-                             "label" : "object",
-                             "value" : d.object
-                         });
-                         obj.rows.push({
-                             "label" : "type",
-                             "value" : d.type
-                         });
-                         obj.rows.push({
-                             "label" : "value",
-                             "value" : d.value
-                         });
-                         tooltip.table()
-                             .width(180)
-                             .show_closer(true)
-                             .call (this, obj);
-
-                    });
+                    .on("click", tooltip);
 
 
                 labels = graph.selectAll(".openTargets_d-d_overview_label")
@@ -158,32 +165,49 @@ var vis = function () {
                         return "rotate(" + (grades % 360) + ")";
                     })
                     .on("mouseover", select)
-                    .on("mouseout", unselect);
-
-                links = graph.selectAll(".openTargets_d-d_overview_link")
-                    .data(data, function (d) {
-                        return d.object + "-" + d.subject;
-                    })
-                    .enter()
-                    .append("line")
-                    .attr("class", "openTargets_d-d_overview_link selected")
-                    .attr("x1", function (d) {
-                        return d.x;
-                    })
-                    .attr("y1", function(d) {
-                        return d.y;
-                    })
-                    .attr("x2", function(d) {
-                        return graphSize/2 * Math.cos(d.angle);
-                    })
-                    .attr("y2", function(d) {
-                        return graphSize/2 * Math.sin(d.angle);
-                    })
-                    .style("stroke", "navy");
-
+                    .on("mouseout", unselect)
+                    .on("click", tooltip);
             });
 
     };
+
+    function tooltip (d) {
+        console.log(d);
+         var obj = {};
+         obj.header = d.object;
+         obj.rows = [];
+         obj.rows.push({
+             value: "<div id=openTargetsD-DFlowerView></div>"
+         });
+         tntTooltip.list()
+             .width(180)
+             .show_closer(true)
+             /*jshint validthis: true */
+             .call (this, obj);
+
+         var flower = flowerView()
+             .values([
+                 {
+                     "value": d.value,
+                     "label": "Targets",
+                     "active": true
+                 },
+                 {
+                     "value": 0,
+                     "label": "Phenotypes",
+                     "active": true
+                 },
+                 {
+                     "value": 0,
+                     "label": "Ontology",
+                     "active": true
+                 }
+             ])
+             .diagonal(200);
+
+         flower(document.getElementById("openTargetsD-DFlowerView"));
+
+    }
 
     // private methods
     function select (d) {
