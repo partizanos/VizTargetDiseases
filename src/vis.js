@@ -126,16 +126,16 @@ var vis = function () {
                         return d.object + "-" + d.subject;
                     })
                     .enter()
-                    .append("text")
-                    .attr("x", function (d) {
+                    .append("g")
+                    .attr("transform", function (d) {
                         var grades = d.angle * 360 / (2*Math.PI);
-                        return graphSize/2 * Math.cos(d.angle);
-//                        return graphSize/2 * Math.cos(grades);
-                    })
-                    .attr("y", function (d) {
-                        return graphSize/2 * Math.sin(d.angle);
+                        var x = graphSize/2 * Math.cos(d.angle);
+                        var y = graphSize/2 * Math.sin(d.angle);
+
+                        return "translate(" + x + "," + y + ")";
                     })
                     .attr("class", "label")
+                    .append("text")
                     .style("font-size", "10px")
                     .style("text-anchor", function (d) {
                         var grades = d.angle * 360 / (2*Math.PI);
@@ -149,9 +149,10 @@ var vis = function () {
                     })
                     .attr("transform", function (d) {
                         var grades = d.angle * 360 / (2*Math.PI);
-                        console.log(this);
-                        console.log(d.object + " Rotate --- " + (grades % 360));
-                        // return "rotate(" + (grades % 360) + ")";
+                        if (grades % 360 > 90 && grades % 360 < 275) {
+                            return "rotate(" + ((grades % 360) + 180) + ")";
+                        }
+                        return "rotate(" + (grades % 360) + ")";
                     });
 
                 links = graph.selectAll("links")
