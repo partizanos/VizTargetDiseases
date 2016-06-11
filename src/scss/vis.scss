@@ -13,3 +13,15 @@
 .unselected {
     opacity: 0.3;
 }
+
+.openTargets_d-d_overview_label > text {
+    alignment-baseline: middle;
+}
+
+.ring {
+    cursor: zoom-in;
+}
+
+.openTargets_d-d_overview_label, .openTargets_d-d_overview_node {
+    cursor: pointer;
+}

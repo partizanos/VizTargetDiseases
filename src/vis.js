@@ -48,10 +48,11 @@ var vis = function () {
         var circlesSize = [0, 0.2, 0.4, 0.6, 0.8, 1.0];
 
         var rings = graph
-            .selectAll(".rings")
+            .selectAll(".ring")
             .data(circlesSize.slice(0,circlesSize.length-1))
             .enter()
             .append("path")
+            .attr("class", "ring")
             .attr("d", function (d, i) {
                 var arc = d3.svg.arc()
                     .innerRadius(circleScale(circlesSize[i]))
@@ -96,7 +97,7 @@ var vis = function () {
                     })
                     .enter()
                     .append("line")
-                    .attr("class", "openTargets_d-d_overview_link selected")
+                    .attr("class", "openTargets_d-d_overview_link unselected")
                     .attr("x1", function (d) {
                         return d.x;
                     })
@@ -117,7 +118,7 @@ var vis = function () {
                     })
                     .enter()
                     .append("circle")
-                    .attr("class", "openTargets_d-d_overview_node")
+                    .attr("class", "openTargets_d-d_overview_node selected")
                     .attr("cx", function (d) {
                         return d.x;
                     })
@@ -144,7 +145,7 @@ var vis = function () {
 
                         return "translate(" + x + "," + y + ")";
                     })
-                    .attr("class", "openTargets_d-d_overview_label")
+                    .attr("class", "openTargets_d-d_overview_label selected")
                     .append("text")
                     .style("font-size", "10px")
                     .style("text-anchor", function (d) {
@@ -258,8 +259,8 @@ var vis = function () {
         links
             .each(function () {
                 d3.select(this)
-                    .classed("selected", true)
-                    .classed("unselected", false);
+                    .classed("selected", false)
+                    .classed("unselected", true);
             });
         labels
             .each(function () {
