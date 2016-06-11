@@ -63,6 +63,9 @@ var vis = function () {
             })
             .attr("fill", function (d, i) {
                 return circleColorScale(circlesSize[i]);
+            })
+            .on("click", function (d) {
+                console.log(d);
             });
 
         // get data
@@ -195,13 +198,28 @@ var vis = function () {
                  },
                  {
                      "value": 0,
+                     "label": "",
+                     "active": false
+                 },
+                 {
+                     "value": 0,
                      "label": "Phenotypes",
                      "active": true
                  },
                  {
                      "value": 0,
+                     "label": "",
+                     "active": false
+                 },
+                 {
+                     "value": 0,
                      "label": "Ontology",
                      "active": true
+                 },
+                 {
+                     "value": 0,
+                     "label": "",
+                     "active": false
                  }
              ])
              .diagonal(200);
