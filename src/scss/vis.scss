@@ -22,6 +22,10 @@
     cursor: zoom-in;
 }
 
+.ring.zoomed {
+    cursor: zoom-out;
+}
+
 .openTargets_d-d_overview_label, .openTargets_d-d_overview_node {
     cursor: pointer;
 }
