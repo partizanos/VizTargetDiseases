@@ -260,9 +260,12 @@ var vis = function () {
              .values([
                  {
                      "value": d.value,
-                     "label": "Targets",
+                     init: function() {
+                               this.label = "Targets: "+String(this.value*100).slice(0,5)+"%"
+                               return this;
+                           },
                      "active": true
-                 },
+                 }.init(),
                  {
                      "value": 0,
                      "label": "",
