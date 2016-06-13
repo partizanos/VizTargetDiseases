@@ -40,15 +40,9 @@ var vis = function () {
             .append("g")
             .attr("transform", "translate(" + (radius + labelSize) + "," + (radius + labelSize) + ")");
 
-        // var circleScale = d3.scale.linear()
-        //     .domain([0, 1])
-        //     .range([0, graphSize/2]);
-        //
         var circleColorScale = d3.scale.linear()
             .domain([0,1])
             .range([d3.rgb(0,82,163), d3.rgb(182,221,252)]);
-
-        // var circlesSize = [0, 0.2, 0.4, 0.6, 0.8, 1.0];
 
         // get data
         var url = api.url.diseaseRelation({
@@ -272,13 +266,16 @@ var vis = function () {
         for (var i=0; i<circleScales.length; i++) {
             var scale = circleScales[i];
             if (selected.domain()[0] == scale.domain()[0]) {
-                scale.range([currRad, radius]);
-                currRad = radius;
+                var outerRad = radius-(10*(circleScales.length-i-1));
+                scale.range([currRad, outerRad]);
+                //currRad = radius-currRad;
+                currRad = outerRad;
             } else {
                 scale.range([currRad, currRad+10]);
                 currRad += 10;
             }
             newScales.push(scale);
+            console.log("ring: " + scale.range()[0] + " - " + scale.range()[1]);
         }
         return newScales;
     }
