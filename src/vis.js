@@ -272,7 +272,8 @@ var vis = function () {
                 scale.range([currRad, radius]);
                 currRad = radius;
             } else {
-                scale.range([currRad, currRad]);
+                scale.range([currRad, currRad+5]);
+                currRad += 5;
             }
             newScales.push(scale);
         }
