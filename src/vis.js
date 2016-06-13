@@ -379,11 +379,11 @@ var vis = function () {
         }
         links
             .each(function (l) {
-                if (cb(l)) {
+                // if (cb(l)) {
                     d3.select(this)
                         .classed("selected", false)
                         .classed("unselected", true);
-                }
+                // }
             });
         labels
             .each(function (l) {
