@@ -100,6 +100,10 @@ var vis = function () {
                         var dom = d.domain();
                         selectedDomain = dom;
                         select(function (d) {
+                            // If it is a link return false always
+                            if (this.nodeName === "line") {
+                                return false;
+                            }
                             return (((1-d.value) > dom[0]) && ((1-d.value) < dom[1]));
                         });
                         // update
@@ -333,7 +337,7 @@ var vis = function () {
         links
             .each (function (l) {
                 var checkLink = this;
-                if (cb(l)) {
+                if (cb.call(checkLink, l)) {
                     d3.select(checkLink)
                         .classed("unselected", false)
                         .classed("selected", true);
@@ -347,7 +351,7 @@ var vis = function () {
         labels
             .each (function (l) {
                 var checkLabel = this;
-                if (cb(l)) {
+                if (cb.call(checkLabel, l)) {
                     d3.select(checkLabel)
                         .classed("unselected", false)
                         .classed("selected", true);
@@ -361,7 +365,7 @@ var vis = function () {
         points
             .each (function (p) {
                 var checkNode = this;
-                if (cb(p)) {
+                if (cb.call(checkNode, p)) {
                     d3.select(checkNode)
                         .classed("unselected", false)
                         .classed("selected", true);
@@ -379,11 +383,11 @@ var vis = function () {
         }
         links
             .each(function (l) {
-                // if (cb(l)) {
+                if (cb(l)) {
                     d3.select(this)
                         .classed("selected", false)
                         .classed("unselected", true);
-                // }
+                }
             });
         labels
             .each(function (l) {
