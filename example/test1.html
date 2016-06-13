@@ -11,10 +11,11 @@
         <option value="shared-targets">Shared targets</option>
         <option value="shared-phenotypes">Shared phenotypes</option>
     </select>
-    <div id="mydiv" style="padding:30px; position:relative"></div>
+    <div id="mydiv"></div>
 
     <script>
     var v = vis()
+        .disease("EFO_0003767")
         .size(800);
 
     v(document.getElementById("mydiv"));

@@ -6,7 +6,8 @@ var vis = function () {
     "use strict";
     var config = {
         size: 500,
-        filter: null
+        filter: null,
+        disease: "EFO_0004591"
     };
 
     var labelSize = 100;
@@ -29,6 +30,8 @@ var vis = function () {
 
         // svg
         var svg = d3.select(div)
+            .append("div")
+            .style("position", "relative")
             .append("svg")
             .attr("width", config.size)
             .attr("height", config.size);
@@ -48,16 +51,16 @@ var vis = function () {
         // var circlesSize = [0, 0.2, 0.4, 0.6, 0.8, 1.0];
 
         // get data
-        // var url = api.url.diseaseRelation({
-        //     id: "EFO_0004591"
-        // });
-        // console.log(url);
+        var url = api.url.diseaseRelation({
+            id: config.disease
+        });
+        console.log(url);
 
-        d3.json("../data/sample.json", function(error, resp) {
-            var data = resp.data;
-            // api.call(url)
-            //     .then (function (resp) {
-            //        var data = resp.body.data;
+        // d3.json("../data/sample.json", function(error, resp) {
+        //     var data = resp.data;
+        api.call(url)
+            .then (function (resp) {
+               var data = resp.body.data;
 
             console.log(data);
             render.update(data, updateScales(radius));
@@ -272,8 +275,8 @@ var vis = function () {
                 scale.range([currRad, radius]);
                 currRad = radius;
             } else {
-                scale.range([currRad, currRad+5]);
-                currRad += 5;
+                scale.range([currRad, currRad+10]);
+                currRad += 10;
             }
             newScales.push(scale);
         }
@@ -415,6 +418,14 @@ var vis = function () {
     }
 
     // Public methods
+    render.disease = function (d) {
+        if (!arguments.length) {
+            return config.disease;
+        }
+        config.disease = d;
+        return this;
+    };
+
     render.size = function (size) {
         if (!arguments.length) {
             return config.size;
