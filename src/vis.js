@@ -15,6 +15,8 @@ var vis = function () {
 
     var points, labels, links;
 
+    var selectedDomain;
+
     var api = cttvApi()
         .prefix("http://test.targetvalidation.org:8899/api/")
         .appname("cttv-web-app")
@@ -89,9 +91,18 @@ var vis = function () {
                     var selected = d3.select(this);
                     if (selected.classed("zoomed")) {
                         selected.classed("zoomed", false);
+                        unselect();
+                        selectedDomain = undefined;
                         render.update(data, updateScales(radius));
                     } else {
                         selected.classed("zoomed", true);
+                        // Since zoomed, gray out non zoomed labels and nodes
+                        var dom = d.domain();
+                        selectedDomain = dom;
+                        select(function (d) {
+                            return (((1-d.value) > dom[0]) && ((1-d.value) < dom[1]));
+                        });
+                        // update
                         render.update(data, updateScales(radius, d));
                     }
                 });
@@ -157,8 +168,19 @@ var vis = function () {
                 .enter()
                 .append("circle")
                 .attr("class", "openTargets_d-d_overview_node selected")
-                .on("mouseout", unselect)
-                .on("mouseover", select)
+                .on("mouseout", function (d) {
+                    unselect(function (p) {
+                        if (selectedDomain) {
+                            return (((1-p.value) > selectedDomain[0]) && ((1-p.value) < selectedDomain[1]));
+                        }
+                        return true;
+                    });
+                })
+                .on("mouseover", function (d) {
+                    select(function (p) {
+                        return p.object == d.object;
+                    });
+                })
                 .on("click", tooltip);
             points
                 .transition()
@@ -207,8 +229,19 @@ var vis = function () {
                     }
                     return "rotate(" + (grades % 360) + ")";
                 })
-                .on("mouseover", select)
-                .on("mouseout", unselect)
+                .on("mouseover", function (d) {
+                    select (function (l) {
+                        return d.object == l.object;
+                    });
+                })
+                .on("mouseout", function (d) {
+                    unselect(function (p) {
+                        if (selectedDomain) {
+                            return (((1-p.value) > selectedDomain[0]) && ((1-p.value) < selectedDomain[1]));
+                        }
+                        return true;
+                    });
+                })
                 .on("click", tooltip);
         };
     };
@@ -296,13 +329,11 @@ var vis = function () {
     }
 
     // private methods
-    function select (d) {
-        /*jshint validthis: true */
-        var selectNode = this;
+    function select (cb) {
         links
             .each (function (l) {
                 var checkLink = this;
-                if (d.object === l.object) {
+                if (cb(l)) {
                     d3.select(checkLink)
                         .classed("unselected", false)
                         .classed("selected", true);
@@ -312,10 +343,11 @@ var vis = function () {
                         .classed("unselected", true);
                 }
             });
+
         labels
             .each (function (l) {
                 var checkLabel = this;
-                if (d.object === l.object) {
+                if (cb(l)) {
                     d3.select(checkLabel)
                         .classed("unselected", false)
                         .classed("selected", true);
@@ -325,10 +357,11 @@ var vis = function () {
                         .classed("unselected", true);
                 }
             });
+
         points
-            .each(function (p) {
+            .each (function (p) {
                 var checkNode = this;
-                if (p.object === d.object) {
+                if (cb(p)) {
                     d3.select(checkNode)
                         .classed("unselected", false)
                         .classed("selected", true);
@@ -340,24 +373,33 @@ var vis = function () {
             });
     }
 
-    function unselect () {
+    function unselect (cb) {
+        if (!cb) {
+            cb = function () {return true;};
+        }
         links
-            .each(function () {
-                d3.select(this)
-                    .classed("selected", false)
-                    .classed("unselected", true);
+            .each(function (l) {
+                if (cb(l)) {
+                    d3.select(this)
+                        .classed("selected", false)
+                        .classed("unselected", true);
+                }
             });
         labels
-            .each(function () {
-                d3.select(this)
-                    .classed("selected", true)
-                    .classed("unselected", false);
+            .each(function (l) {
+                if (cb(l)) {
+                    d3.select(this)
+                        .classed("selected", true)
+                        .classed("unselected", false);
+                }
             });
         points
-            .each(function () {
-                d3.select(this)
-                    .classed("selected", true)
-                    .classed("unselected", false);
+            .each(function (p) {
+                if (cb(p)) {
+                    d3.select(this)
+                        .classed("selected", true)
+                        .classed("unselected", false);
+                }
             });
     }
 
