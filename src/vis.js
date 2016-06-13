@@ -275,7 +275,6 @@ var vis = function () {
                 currRad += 10;
             }
             newScales.push(scale);
-            console.log("ring: " + scale.range()[0] + " - " + scale.range()[1]);
         }
         return newScales;
     }
