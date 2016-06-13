@@ -108,14 +108,40 @@ var vis = function () {
                 });
 
             // Calculate coords for each data point
-            var stepRad = 25.2; // grades
+            // var stepRad = 25.2; // grades
             var currAngle = 0;
 
+/////////////
+
+            //sort by type
+            function createComparator(property) {
+                return function(a, b) {
+                    if (a[property] > b[property]) return 1
+                    if (a[property] < b[property]) return -1
+                    return 0
+                };
+            }
+            data.sort(createComparator('type'))
+
+            //put same type together
+            var types={}
+            for (var i = 0; i < data.length; i++) {
+                if(types[data[i].type]==undefined)
+                    types[data[i].type]=[]
+                types[data[i].type].push(data[i])
+             } 
+             // portion of circle per data type
+             var portionsCircle={};
+             for(i in types){
+                portionsCircle[i]=types[i].length/data.length
+             }
+
+            //scatter within a type 
+////////////
             for (var i=0; i<data.length; i++) {
                 var p = data[i];
                 var scale = circleScales[~~((1-p.value)/0.2)];
                 var coords = point(scale(1 - p.value), currAngle);
-
                 p.x = coords[0];
                 p.y = coords[1];
                 p.angle = currAngle;
