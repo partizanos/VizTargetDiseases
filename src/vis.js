@@ -108,7 +108,7 @@ var vis = function () {
                 });
 
             // Calculate coords for each data point
-            // var stepRad = 25.2; // grades
+            var stepRad = 25.2; // grades
             var currAngle = 0;
 
 /////////////
