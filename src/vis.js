@@ -1,6 +1,5 @@
 var cttvApi = require('cttv.api');
-var tntTooltip = require('tnt.tooltip');
-var flowerView = require("cttv.flowerView");
+var tooltip = require("./tooltip.js");
 
 var vis = function () {
     "use strict";
@@ -55,9 +54,8 @@ var vis = function () {
         api.call(url)
             .then (function (resp) {
                var data = resp.body.data;
-
-            console.log(data);
-            render.update(data, updateScales(radius));
+               console.log(data);
+               render.update(data, updateScales(radius));
         });
 
         render.update = function (data, circleScales) {
@@ -279,58 +277,6 @@ var vis = function () {
         return newScales;
     }
 
-    function tooltip (d) {
-        console.log(d);
-         var obj = {};
-         obj.header = d.object;
-         obj.rows = [];
-         obj.rows.push({
-             value: "<div id=openTargetsD-DFlowerView></div>"
-         });
-         tntTooltip.list()
-             .width(180)
-             .show_closer(true)
-             /*jshint validthis: true */
-             .call (this, obj);
-
-         var flower = flowerView()
-             .values([
-                 {
-                     "value": d.value,
-                     "label": "Targets",
-                     "active": true
-                 },
-                 {
-                     "value": 0,
-                     "label": "",
-                     "active": false
-                 },
-                 {
-                     "value": 0,
-                     "label": "Phenotypes",
-                     "active": true
-                 },
-                 {
-                     "value": 0,
-                     "label": "",
-                     "active": false
-                 },
-                 {
-                     "value": 0,
-                     "label": "Ontology",
-                     "active": true
-                 },
-                 {
-                     "value": 0,
-                     "label": "",
-                     "active": false
-                 }
-             ])
-             .diagonal(200);
-
-         flower(document.getElementById("openTargetsD-DFlowerView"));
-
-    }
 
     // private methods
     function select (cb) {

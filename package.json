@@ -34,6 +34,8 @@
   "dependencies": {
     "cttv.api": "0.0.5",
     "cttv.flowerView": "0.0.0",
+    "es6-promise": "^3.2.1",
+    "rsvp": "^3.2.1",
     "tnt.tooltip": "^0.1.0"
   }
 }
