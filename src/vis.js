@@ -1,12 +1,17 @@
 var cttvApi = require('cttv.api');
 var tooltip = require("./tooltip.js");
+var spinner = require("cttv.spinner");
 
 var vis = function () {
     "use strict";
     var config = {
         size: 500,
         filter: null,
-        disease: "EFO_0004591"
+        disease: "EFO_0004591",
+        cttvApi: cttvApi()
+            .prefix("http://test.targetvalidation.org:8899/api/")
+            .appname("cttv-web-app")
+            .secret("2J23T20O31UyepRj7754pEA2osMOYfFK")
     };
 
     var labelSize = 100;
@@ -17,12 +22,22 @@ var vis = function () {
 
     var selectedDomain;
 
-    var api = cttvApi()
-        .prefix("https://test.targetvalidation.org:8899/api/")
-        .appname("cttv-web-app")
-        .secret("2J23T20O31UyepRj7754pEA2osMOYfFK");
+    var api = config.cttvApi;
+
+    // var api = cttvApi()
+    //     .prefix("https://test.targetvalidation.org:8899/api/")
+    //     .appname("cttv-web-app")
+    //     .secret("2J23T20O31UyepRj7754pEA2osMOYfFK");
 
     var render = function (div) {
+
+        // Add the spinner
+        var sp = spinner()
+            .size(30)
+            .stroke(3);
+        var spDiv = d3.select(div)
+            .append("div");
+        sp(spDiv.node());
 
         var graphSize = config.size - (labelSize*2);
         var radius = graphSize/2;
@@ -53,6 +68,8 @@ var vis = function () {
         //     var data = resp.data;
         api.call(url)
             .then (function (resp) {
+                // Remove the spinner
+                spDiv.remove();
                var data = resp.body.data;
                console.log(data);
                render.update(data, updateScales(radius));
@@ -373,6 +390,14 @@ var vis = function () {
             return config.size;
         }
         config.size = size;
+        return this;
+    };
+
+    render.cttvApi = function (api) {
+        if (!arguments.length) {
+            return config.cttvApi;
+        }
+        config.cttvApi = api;
         return this;
     };
 
