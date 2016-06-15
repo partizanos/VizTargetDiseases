@@ -18,7 +18,7 @@ var vis = function () {
     var selectedDomain;
 
     var api = cttvApi()
-        .prefix("http://test.targetvalidation.org:8899/api/")
+        .prefix("https://test.targetvalidation.org:8899/api/")
         .appname("cttv-web-app")
         .secret("2J23T20O31UyepRj7754pEA2osMOYfFK");
 
