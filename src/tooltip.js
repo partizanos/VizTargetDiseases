@@ -1,10 +1,10 @@
 var tntTooltip = require('tnt.tooltip');
 var flowerView = require("cttv.flowerView");
 var spinner = require("cttv.spinner");
-var cttvApi = require("cttv.api");
+// var cttvApi = require("cttv.api");
 var promise = require("rsvp");
 
-function tooltip (d) {
+function tooltip (d, api) {
     var elem = this;
     var event = d3.event;
     console.log(d);
@@ -25,10 +25,10 @@ function tooltip (d) {
 
      sp(document.getElementById("diseaseLoadingSpinner"));
 
-     var api = cttvApi()
-         .prefix("http://test.targetvalidation.org:8899/api/")
-         .appname("cttv-web-app")
-         .secret("2J23T20O31UyepRj7754pEA2osMOYfFK");
+    //  var api = cttvApi()
+    //      .prefix("http://test.targetvalidation.org:8899/api/")
+    //      .appname("cttv-web-app")
+    //      .secret("2J23T20O31UyepRj7754pEA2osMOYfFK");
 
      // Object disease association
      var urlObject = api.url.associations({

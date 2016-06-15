@@ -22,8 +22,6 @@ var vis = function () {
 
     var selectedDomain;
 
-    var api = config.cttvApi;
-
     // var api = cttvApi()
     //     .prefix("https://test.targetvalidation.org:8899/api/")
     //     .appname("cttv-web-app")
@@ -59,6 +57,7 @@ var vis = function () {
             .range([d3.rgb(0,82,163), d3.rgb(182,221,252)]);
 
         // get data
+        var api = config.cttvApi;
         var url = api.url.diseaseRelation({
             id: config.disease
         });
@@ -66,13 +65,14 @@ var vis = function () {
 
         // d3.json("../data/sample.json", function(error, resp) {
         //     var data = resp.data;
+
         api.call(url)
             .then (function (resp) {
                 // Remove the spinner
                 spDiv.remove();
-               var data = resp.body.data;
-               console.log(data);
-               render.update(data, updateScales(radius));
+                var data = resp.body.data;
+                console.log(data);
+                render.update(data, updateScales(radius));
         });
 
         render.update = function (data, circleScales) {
@@ -197,7 +197,9 @@ var vis = function () {
                         return p.object == d.object;
                     });
                 })
-                .on("click", tooltip);
+                .on("click", function (d) {
+                    tooltip.call(this, d, api);
+                });
             points
                 .transition()
                 .duration(transitionSpeed)
@@ -258,7 +260,9 @@ var vis = function () {
                         return true;
                     });
                 })
-                .on("click", tooltip);
+                .on("click", function (d) {
+                    tooltip.call(this, d, api);
+                });
         };
     };
 
