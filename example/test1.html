@@ -6,6 +6,10 @@
 </head>
 
 <body>
+    <select name="score" id="changeScore">
+        <option value="jaccard">Jaccard</option>
+        <option value="euclidean">Euclidean</option>
+    </select>
     <select name="types" id="changeType">
         <option value="">All</option>
         <option value="shared-targets">Shared targets</option>
@@ -16,7 +20,10 @@
     <script>
     var v = vis()
         .disease("EFO_0003767")
-        .size(800);
+        .size(800)
+        .on("click", function (d) {
+        console.log(d);
+    });
 
     v(document.getElementById("mydiv"));
 
@@ -24,7 +31,16 @@
         .on("change", function () {
             console.log(this.value);
             v.filter_type(this.value);
+        });
+
+    d3.select("#changeScore")
+        .on("change", function () {
+            console.log(this.value);
+            v.score(this.value);
+            v.update();
+            //v.filter_type(this.value);
         })
+
 
     // setTimeout(function () {
     //     v.filter_type("shared-phenotype");

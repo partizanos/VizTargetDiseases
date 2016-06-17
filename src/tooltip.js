@@ -12,7 +12,7 @@ function tooltip (d, api) {
 
 
     var spinnerTooltip = tntTooltip.plain()
-         .id(d.object)
+         .id(d.object.id)
          .call(elem, {
              header: d.object,
              //body: "<img src=animatedEllipse.gif width=30/>"
@@ -32,14 +32,14 @@ function tooltip (d, api) {
 
      // Object disease association
      var urlObject = api.url.associations({
-         disease: d.object,
+         disease: d.object.id,
          fields: ['target', 'association_score.datatypes'],
          size: 1000
      });
      var objectPromise = api.call(urlObject);
 
     var urlSubject = api.url.associations({
-        disease: d.subject,
+        disease: d.subject.id,
         fields: ['target', 'association_score.datatypes'],
         size: 1000
     });
@@ -71,22 +71,22 @@ function tooltip (d, api) {
             }
 
             var obj = {};
-            obj.header = d.object;
+            obj.header = d.object.id;
             obj.rows = [];
             obj.rows.push({
                 value: "<div id=openTargetsD-DFlowerView></div>"
             });
             obj.rows.push({
-                value: totalTargetsInObject + " targets associated with " + d.object
+                value: totalTargetsInObject + " targets associated with " + d.object.id
             });
             obj.rows.push({
-                value: totalTargetsInSubject + " targets associated with " + d.subject
+                value: totalTargetsInSubject + " targets associated with " + d.subject.id
             });
             obj.rows.push({
                 value: Object.keys(targetsInBoth).length + " shared targets"
             });
             tntTooltip.list()
-               .id(d.object)
+               .id(d.object.id)
                .width(180)
                .show_closer(true)
                /*jshint validthis: true */

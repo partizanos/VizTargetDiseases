@@ -4,12 +4,17 @@ var spinner = require("cttv.spinner");
 
 var vis = function () {
     "use strict";
+
+    var dispatch = d3.dispatch ("click", "dblclick", "mouseover", "mouseout");
+
     var config = {
         size: 500,
         filter: null,
-        disease: "EFO_0004591",
+        disease: "EFO_0001075",
+        score: "jaccard",
         cttvApi: cttvApi()
-            .prefix("http://test.targetvalidation.org:8899/api/")
+            //.prefix("http://test.targetvalidation.org:8008/api/")
+            .prefix("https://alpha.targetvalidation.org/api/")
             .appname("cttv-web-app")
             .secret("2J23T20O31UyepRj7754pEA2osMOYfFK")
     };
@@ -21,6 +26,10 @@ var vis = function () {
     var points, labels, links;
 
     var selectedDomain;
+
+    var currData;
+
+    var radius;
 
     // var api = cttvApi()
     //     .prefix("https://test.targetvalidation.org:8899/api/")
@@ -38,7 +47,7 @@ var vis = function () {
         sp(spDiv.node());
 
         var graphSize = config.size - (labelSize*2);
-        var radius = graphSize/2;
+        radius = graphSize/2;
 
         // svg
         var svg = d3.select(div)
@@ -59,7 +68,8 @@ var vis = function () {
         // get data
         var api = config.cttvApi;
         var url = api.url.diseaseRelation({
-            id: config.disease
+            id: config.disease,
+            size: 100
         });
         console.log(url);
 
@@ -71,11 +81,32 @@ var vis = function () {
                 // Remove the spinner
                 spDiv.remove();
                 var data = resp.body.data;
+                normaliseScore(resp.body.data, "euclidean");
+                currData = data;
                 console.log(data);
-                render.update(data, updateScales(radius));
+                update(data, updateScales(radius));
         });
 
-        render.update = function (data, circleScales) {
+        function normaliseScore(data, score) {
+            var max = -Infinity;
+            var min = Infinity;
+            data.map (function (d) {
+                if (d.scores[score] > max) {
+                    max = d.scores[score];
+                }
+                if (d.scores[score] < min) {
+                    min = d.scores[score];
+                }
+            });
+            var scoreScale = d3.scale.linear()
+                .domain([min, max])
+                .range([0,1]);
+            data.map (function (d) {
+                d.scores[score] = 1-scoreScale(d.scores[score]);
+            });
+        }
+
+        var update = function (data, circleScales) {
             // Rings
             var rings = graph
                 .selectAll(".ring")
@@ -105,7 +136,7 @@ var vis = function () {
                         selected.classed("zoomed", false);
                         unselect();
                         selectedDomain = undefined;
-                        render.update(data, updateScales(radius));
+                        update(data, updateScales(radius));
                     } else {
                         selected.classed("zoomed", true);
                         // Since zoomed, gray out non zoomed labels and nodes
@@ -116,10 +147,11 @@ var vis = function () {
                             if (this.nodeName === "line") {
                                 return false;
                             }
-                            return (((1-d.value) > dom[0]) && ((1-d.value) < dom[1]));
+                            var value = d.scores[config.score];
+                            return (((1-value) > dom[0]) && ((1-value) < dom[1]));
                         });
                         // update
-                        render.update(data, updateScales(radius, d));
+                        update(data, updateScales(radius, d));
                     }
                 });
             rings
@@ -140,8 +172,15 @@ var vis = function () {
 
             for (var i=0; i<data.length; i++) {
                 var p = data[i];
-                var scale = circleScales[~~((1-p.value)/0.2)];
-                var coords = point(scale(1 - p.value), currAngle);
+                var value = p.scores[config.score];
+
+                var index = ~~((1-value)/0.2);
+                if (index > circleScales.length-1) {
+                    index = circleScales.length-1;
+                }
+                // var scale = circleScales[~~((1-value)/0.2)];
+                var scale = circleScales[index];
+                var coords = point(scale(1 - value), currAngle);
 
                 p.x = coords[0];
                 p.y = coords[1];
@@ -152,7 +191,7 @@ var vis = function () {
             // Links
             links = graph.selectAll(".openTargets_d-d_overview_link")
                 .data(data, function (d) {
-                    return d.object + "-" + d.subject;
+                    return d.object.id + "-" + d.subject.id;
                 });
             links
                 .enter()
@@ -176,9 +215,10 @@ var vis = function () {
                 });
 
             // Nodes
+
             points = graph.selectAll(".openTargets_d-d_overview_node")
                 .data(data, function (d) {
-                    return d.object + "-" + d.subject;
+                    return d.object.id + "-" + d.subject.id;
                 });
             points
                 .enter()
@@ -187,18 +227,20 @@ var vis = function () {
                 .on("mouseout", function (d) {
                     unselect(function (p) {
                         if (selectedDomain) {
-                            return (((1-p.value) > selectedDomain[0]) && ((1-p.value) < selectedDomain[1]));
+                            var value = p.scores[config.score];
+                            return (((1-value) > selectedDomain[0]) && ((1-value) < selectedDomain[1]));
                         }
                         return true;
                     });
                 })
                 .on("mouseover", function (d) {
                     select(function (p) {
-                        return p.object == d.object;
+                        return p.object.id == d.object.id;
                     });
                 })
                 .on("click", function (d) {
-                    tooltip.call(this, d, api);
+                    dispatch.click.call(this, d);
+                    // tooltip.call(this, d, api);
                 });
             points
                 .transition()
@@ -215,7 +257,7 @@ var vis = function () {
             // Labels
             labels = graph.selectAll(".openTargets_d-d_overview_label")
                 .data(data, function (d) {
-                    return d.object + "-" + d.subject;
+                    return d.object.id + "-" + d.subject.id;
                 });
             labels
                 .enter()
@@ -238,7 +280,7 @@ var vis = function () {
                     return "start";
                 })
                 .text(function(d) {
-                    return d.object;
+                    return d.object.label;
                 })
                 .attr("transform", function (d) {
                     var grades = d.angle * 360 / (2*Math.PI);
@@ -249,21 +291,30 @@ var vis = function () {
                 })
                 .on("mouseover", function (d) {
                     select (function (l) {
-                        return d.object == l.object;
+                        return d.object.id == l.object.id;
                     });
                 })
                 .on("mouseout", function (d) {
                     unselect(function (p) {
                         if (selectedDomain) {
-                            return (((1-p.value) > selectedDomain[0]) && ((1-p.value) < selectedDomain[1]));
+                            var value = p.scores[config.score];
+                            return (((1-value) > selectedDomain[0]) && ((1-value) < selectedDomain[1]));
                         }
                         return true;
                     });
                 })
                 .on("click", function (d) {
-                    tooltip.call(this, d, api);
+                    dispatch.click.call(this, d);
+                    //tooltip.call(this, d, api);
                 });
         };
+
+        render.update = function () {
+            if (currData && radius) {
+                update(currData, updateScales(radius));
+            }
+        };
+
     };
 
     function updateScales (radius, selected) {
@@ -405,6 +456,14 @@ var vis = function () {
         return this;
     };
 
+    render.score = function (v) {
+        if (!arguments.length) {
+            return config.score;
+        }
+        config.score = v;
+        return this;
+    };
+
     render.filter_type = function (type) {
         points
             .style("display", function (d) {
@@ -418,7 +477,7 @@ var vis = function () {
             });
     };
 
-    return render;
+    return d3.rebind(render, dispatch, "on");
 };
 
 module.exports = exports = vis;
