@@ -22,8 +22,11 @@
         .disease("EFO_0003767")
         .size(800)
         .on("click", function (d) {
-        console.log(d);
-    });
+            console.log(d);
+        })
+        .on("load", function (d) {
+            console.log("data loaded...");
+        });
 
     v(document.getElementById("mydiv"));
 

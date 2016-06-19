@@ -5,13 +5,14 @@ var spinner = require("cttv.spinner");
 var vis = function () {
     "use strict";
 
-    var dispatch = d3.dispatch ("click", "dblclick", "mouseover", "mouseout");
+    var dispatch = d3.dispatch ("click", "dblclick", "mouseover", "mouseout", "load");
 
     var config = {
         size: 500,
         filter: null,
         disease: "EFO_0001075",
-        score: "jaccard",
+        score: "euclidean",
+        // onLoad: function(){},
         cttvApi: cttvApi()
             //.prefix("http://test.targetvalidation.org:8008/api/")
             .prefix("https://alpha.targetvalidation.org/api/")
@@ -81,30 +82,32 @@ var vis = function () {
                 // Remove the spinner
                 spDiv.remove();
                 var data = resp.body.data;
-                normaliseScore(resp.body.data, "euclidean");
+                // normaliseScore(resp.body.data, "euclidean");
                 currData = data;
                 console.log(data);
                 update(data, updateScales(radius));
+                // config.onLoad(data);
+                dispatch.load(data);
         });
 
-        function normaliseScore(data, score) {
-            var max = -Infinity;
-            var min = Infinity;
-            data.map (function (d) {
-                if (d.scores[score] > max) {
-                    max = d.scores[score];
-                }
-                if (d.scores[score] < min) {
-                    min = d.scores[score];
-                }
-            });
-            var scoreScale = d3.scale.linear()
-                .domain([min, max])
-                .range([0,1]);
-            data.map (function (d) {
-                d.scores[score] = 1-scoreScale(d.scores[score]);
-            });
-        }
+        // function normaliseScore(data, score) {
+        //     var max = -Infinity;
+        //     var min = Infinity;
+        //     data.map (function (d) {
+        //         if (d.scores[score] > max) {
+        //             max = d.scores[score];
+        //         }
+        //         if (d.scores[score] < min) {
+        //             min = d.scores[score];
+        //         }
+        //     });
+        //     var scoreScale = d3.scale.linear()
+        //         .domain([min, max])
+        //         .range([0,1]);
+        //     data.map (function (d) {
+        //         d.scores[score] = 1-scoreScale(d.scores[score]);
+        //     });
+        // }
 
         var update = function (data, circleScales) {
             // Rings
@@ -461,6 +464,14 @@ var vis = function () {
             return config.score;
         }
         config.score = v;
+        return this;
+    };
+
+    render.onLoad = function (cb) {
+        if (!arguments.length) {
+            return config.onLoad;
+        }
+        config.onLoad = cb;
         return this;
     };
 
