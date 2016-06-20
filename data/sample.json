@@ -21,6 +21,30 @@
 		"subject": "EFO_0004591"
 	}, {
 		"direction": null,
+		"object": "DDDDDD",
+		"type": "shared-phenotypes",
+		"value": 0.5,
+		"subject": "EFO_0004591"
+	}, {
+		"direction": null,
+		"object": "EEEE",
+		"type": "shared-phenotypes",
+		"value": 0.4,
+		"subject": "EFO_0004591"
+	}, {
+		"direction": null,
+		"object": "FFFFFFFFFFF",
+		"type": "shared-phenotypes",
+		"value": 0.7,
+		"subject": "EFO_0004591"
+	}, {
+		"direction": null,
+		"object": "GGGGGGGGGG",
+		"type": "shared-phenotypes",
+		"value": 0.5,
+		"subject": "EFO_0004591"
+	}, {
+		"direction": null,
 		"object": "EFO_0000270",
 		"type": "shared-targets",
 		"value": 0.7139138126389065,

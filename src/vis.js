@@ -10,65 +10,138 @@ var vis = function () {
     };
 
     var labelSize = 100;
-
     var transitionSpeed = 1000;
-
     var points, labels, links;
-
     var api = cttvApi()
         .prefix("http://test.targetvalidation.org:8899/api/")
         .appname("cttv-web-app")
         .secret("2J23T20O31UyepRj7754pEA2osMOYfFK");
 
     var render = function (div) {
-
         var graphSize = config.size - (labelSize*2);
         var radius = graphSize/2;
 
-        // svg
+        var zoom = d3.behavior.zoom()
+            .scaleExtent([1, 10])
+            .on("zoom", zoomed);
+
+        function zoomed() {
+          graph.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        }
+        
         var svg = d3.select(div)
             .append("svg")
             .attr("width", config.size)
-            .attr("height", config.size);
+            .attr("height", config.size)
 
         var graph = svg
             .append("g")
-            .attr("transform", "translate(" + (radius + labelSize) + "," + (radius + labelSize) + ")");
+            .attr("transform", "translate(" + (radius + labelSize) + "," + (radius + labelSize) + ")")
+            .call(zoom);
 
-        // var circleScale = d3.scale.linear()
-        //     .domain([0, 1])
-        //     .range([0, graphSize/2]);
-        //
         var circleColorScale = d3.scale.linear()
             .domain([0,1])
             .range([d3.rgb(0,82,163), d3.rgb(182,221,252)]);
 
-        // var circlesSize = [0, 0.2, 0.4, 0.6, 0.8, 1.0];
 
-        // get data
-        // var url = api.url.diseaseRelation({
-        //     id: "EFO_0004591"
-        // });
-        // console.log(url);
+       
 
         d3.json("../data/sample.json", function(error, resp) {
             var data = resp.data;
-            // api.call(url)
-            //     .then (function (resp) {
-            //        var data = resp.body.data;
-
             console.log(data);
-            render.update(data, updateScales(radius));
+///////////////
+        //sort by type
+            function createComparator(property) {
+                return function(a, b) {
+                    if (a[property] > b[property]) return 1
+                    if (a[property] < b[property]) return -1
+                    return 0
+                };
+            }
+            data.sort(createComparator('type'))
+
+            //put same type together
+            var types={}
+            for (var i = 0; i < data.length; i++) {
+                if(types[data[i].type]==undefined)
+                    types[data[i].type]=[]
+                types[data[i].type].push(data[i])
+            } 
+            // portion of circle per data type
+            var dataTypes=[];
+            for(i in types)
+                dataTypes.push(
+                    {               
+                        "type":i, 
+                        "population":types[i].length/data.length
+                    })
+/////////////////////
+            render.update(data, updateScales(radius), dataTypes);
         });
 
-        render.update = function (data, circleScales) {
+        render.update = function (data, circleScales, dataTypes) {
+            
+            //Give color mechanism depednding on the datatype
+            var allColors=[[d3.rgb(0,82,163), d3.rgb(182,221,252)],["#ff0000", "#ffffcc"],["#ffa500","#ffe4b2"],["#4A5D23","#90EE90"], ["#ffff00", "#ffffb2"],[ "#d0743c", "#ff8c00"]];
+            function giveColor(i){
+              //console.log(i)
+              return d3.scale.linear()
+                         .domain([0,105])
+                         .range([allColors[i][0], allColors[i][1]])}
+
+            //create arcs equivalent of rings
+            var arcs=[];            
+            for(var i=0; i<5; i++){
+                var arc = d3.svg.arc()
+                .outerRadius(radius-(i*radius/5))
+                .innerRadius(radius-(i*radius/5)-radius/5);
+                
+                arcs.push(arc);
+            }
+
+            var labelArc = d3.svg.arc()
+                .outerRadius(radius - 40)
+                .innerRadius(radius - 40);
+
+            var pie = d3.layout.pie()
+                .sort(null)
+                .value(function(d) { return d.population; });
+
+            
+            var g = graph.selectAll(".arc")
+                .data(pie(dataTypes))
+                .enter().append("g")
+                .attr("class", "arc");
+
+            var arcAngles={};
+              for (i=0; i<5; i++)
+                  g.append("path")
+                  .attr("d", arcs[i])
+                  .style("fill", function(d) {
+                        console.log(d.data);//arcAngels[d.startAngle]
+                        if(d.data.type=="shared-phenotypes") return giveColor(2)(i*20)
+                        if(d.data.type=="shared-targets") return giveColor(0)(i*20)
+                        if(d.data.type=="Drugs") return giveColor(1)(i*20);
+                        if(d.data.type=="Diseases") return giveColor(3)(i*20);
+                        return giveColor(4)(i*20);            
+                });
+
+            g.append("text")
+                  .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
+                  .attr("dy", ".35em")
+                  .text(function(d) { return d.data.type; });
+
+            function type(d) {
+              d.population = +d.population;
+              return d;
+            }
+            ///////////////////
             // Rings
-            var rings = graph
+           /* var rings = graph
                 .selectAll(".ring")
                 .data(circleScales);
-                // .data(currCirclesSize.slice(0,currCirclesSize.length-1), function (d) {
-                //     return d;
-                // });
+            
+
             rings
                 .enter()
                 .append("path")
@@ -95,6 +168,8 @@ var vis = function () {
                         render.update(data, updateScales(radius, d));
                     }
                 });
+
+
             rings
                 .transition()
                 .duration(transitionSpeed)
@@ -107,37 +182,14 @@ var vis = function () {
                     return arc(d, i);
                 });
 
+*/
+
+
+
             // Calculate coords for each data point
-            // var stepRad = 25.2; // grades
+            var stepRad = 3.5; // grades
             var currAngle = 0;
 
-/////////////
-
-            //sort by type
-            function createComparator(property) {
-                return function(a, b) {
-                    if (a[property] > b[property]) return 1
-                    if (a[property] < b[property]) return -1
-                    return 0
-                };
-            }
-            data.sort(createComparator('type'))
-
-            //put same type together
-            var types={}
-            for (var i = 0; i < data.length; i++) {
-                if(types[data[i].type]==undefined)
-                    types[data[i].type]=[]
-                types[data[i].type].push(data[i])
-             } 
-             // portion of circle per data type
-             var portionsCircle={};
-             for(i in types){
-                portionsCircle[i]=types[i].length/data.length
-             }
-
-            //scatter within a type 
-////////////
             for (var i=0; i<data.length; i++) {
                 var p = data[i];
                 var scale = circleScales[~~((1-p.value)/0.2)];
@@ -255,6 +307,7 @@ var vis = function () {
         // We are focusing on a scale
         var newScales = [];
         var currRad = 0;
+        //if it's the selected scale put it to the length of radius else put it to 0 length
         for (var i=0; i<circleScales.length; i++) {
             var scale = circleScales[i];
             if (selected.domain()[0] == scale.domain()[0]) {
@@ -321,7 +374,6 @@ var vis = function () {
              .diagonal(200);
 
          flower(document.getElementById("openTargetsD-DFlowerView"));
-
     }
 
     // private methods
@@ -417,7 +469,6 @@ var vis = function () {
                 return "block";
             });
     };
-
     return render;
 };
 
