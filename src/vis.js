@@ -12,7 +12,7 @@ var vis = function () {
         filter: null,
         disease: "EFO_0001075",
         score: "euclidean",
-        // onLoad: function(){},
+        skip: 7,
         cttvApi: cttvApi()
             //.prefix("http://test.targetvalidation.org:8008/api/")
             .prefix("https://alpha.targetvalidation.org/api/")
@@ -170,7 +170,9 @@ var vis = function () {
                 });
 
             // Calculate coords for each data point
-            var stepRad = 25.2; // grades
+            var stepRad = config.skip * (360 / data.length);
+            // var stepRad = 25.2; // grades
+            //var stepRad = 360 / 100;
             var currAngle = 0;
 
             for (var i=0; i<data.length; i++) {
@@ -464,6 +466,14 @@ var vis = function () {
             return config.score;
         }
         config.score = v;
+        return this;
+    };
+
+    render.skip = function (a) {
+        if (!arguments.length) {
+            return config.skip;
+        }
+        config.skip = a;
         return this;
     };
 
