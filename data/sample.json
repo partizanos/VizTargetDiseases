@@ -1,7 +1,49 @@
 {
 	"available_datatypes": [],
 	"total": 100,
-	"data": [{
+	"data": [
+	 
+	{
+		"direction": null,
+		"object": "disease1",
+		"type": "shared-diseases",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},
+	{
+		"direction": null,
+		"object": "disease2",
+		"type": "shared-diseases",
+		"value": 0.5,
+		"subject": "EFO_0004591"
+	},
+	 {
+		"direction": null,
+		"object": "Drug1",
+		"type": "shared-drugs",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},
+	{
+		"direction": null,
+		"object": "Drug2",
+		"type": "shared-drugs",
+		"value": 0.5,
+		"subject": "EFO_0004591"
+	}, {
+		"direction": null,
+		"object": "Drug3",
+		"type": "shared-drugs",
+		"value": 0.4,
+		"subject": "EFO_0004591"
+	}, {
+		"direction": null,
+		"object": "EFO_0000270",
+		"type": "shared-targets",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},
+	{
 		"direction": null,
 		"object": "AAAAAAAA",
 		"type": "shared-phenotypes",
@@ -42,12 +84,6 @@
 		"object": "GGGGGGGGGG",
 		"type": "shared-phenotypes",
 		"value": 0.5,
-		"subject": "EFO_0004591"
-	}, {
-		"direction": null,
-		"object": "EFO_0000270",
-		"type": "shared-targets",
-		"value": 0.7139138126389065,
 		"subject": "EFO_0004591"
 	}, {
 		"direction": null,

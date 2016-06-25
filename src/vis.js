@@ -37,7 +37,7 @@ var vis = function () {
         var graph = svg
             .append("g")
             .attr("transform", "translate(" + (radius + labelSize) + "," + (radius + labelSize) + ")")
-            .call(zoom);
+            // .call(zoom);
 
         var circleColorScale = d3.scale.linear()
             .domain([0,1])
@@ -48,6 +48,10 @@ var vis = function () {
 
         d3.json("../data/sample.json", function(error, resp) {
             var data = resp.data;
+            if(data.length>100){
+                var originalData=data
+                data=data.slice(0,95);
+            }
             console.log(data);
 ///////////////
         //sort by type
@@ -67,15 +71,17 @@ var vis = function () {
                     types[data[i].type]=[]
                 types[data[i].type].push(data[i])
             } 
+
             // portion of circle per data type
             var dataTypes=[];
-            for(i in types)
+            for(i in types){
                 dataTypes.push(
                     {               
                         "type":i, 
                         "population":types[i].length/data.length
                     })
-/////////////////////
+            }
+            console.log(dataTypes);
             render.update(data, updateScales(radius), dataTypes);
         });
 
@@ -95,7 +101,7 @@ var vis = function () {
                 var arc = d3.svg.arc()
                 .outerRadius(radius-(i*radius/5))
                 .innerRadius(radius-(i*radius/5)-radius/5);
-                
+
                 arcs.push(arc);
             }
 
@@ -117,12 +123,13 @@ var vis = function () {
               for (i=0; i<5; i++)
                   g.append("path")
                   .attr("d", arcs[i])
+                  //Give color based on datatype
                   .style("fill", function(d) {
                         console.log(d.data);//arcAngels[d.startAngle]
                         if(d.data.type=="shared-phenotypes") return giveColor(2)(i*20)
                         if(d.data.type=="shared-targets") return giveColor(0)(i*20)
-                        if(d.data.type=="Drugs") return giveColor(1)(i*20);
-                        if(d.data.type=="Diseases") return giveColor(3)(i*20);
+                        if(d.data.type=="shared-drugs") return giveColor(1)(i*20);
+                        if(d.data.type=="shared-diseases") return giveColor(3)(i*20);
                         return giveColor(4)(i*20);            
                 });
 
@@ -135,6 +142,9 @@ var vis = function () {
               d.population = +d.population;
               return d;
             }
+
+
+
             ///////////////////
             // Rings
            /* var rings = graph
@@ -187,8 +197,10 @@ var vis = function () {
 
 
             // Calculate coords for each data point
-            var stepRad = 3.5; // grades
-            var currAngle = 0;
+            // var stepRad = 3.5; // grades
+            var stepRad = 3.8; // grades
+            // var currAngle = 0;
+            var currAngle = 3*Math.PI/2+0.03;
 
             for (var i=0; i<data.length; i++) {
                 var p = data[i];
@@ -199,6 +211,8 @@ var vis = function () {
                 p.angle = currAngle;
                 currAngle += (stepRad * 2 * Math.PI / 360);
             }
+
+
 
             // Links
             links = graph.selectAll(".openTargets_d-d_overview_link")
@@ -226,6 +240,8 @@ var vis = function () {
                     return radius * Math.sin(d.angle);
                 });
 
+
+
             // Nodes
             points = graph.selectAll(".openTargets_d-d_overview_node")
                 .data(data, function (d) {
@@ -247,7 +263,7 @@ var vis = function () {
                 .attr("cy", function (d) {
                     return d.y;
                 })
-                .attr("r", 5)
+                .attr("r", 3.5)
                 .attr("fill", "navy");
 
             // Labels
