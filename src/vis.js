@@ -477,13 +477,13 @@ var vis = function () {
         return this;
     };
 
-    render.onLoad = function (cb) {
-        if (!arguments.length) {
-            return config.onLoad;
-        }
-        config.onLoad = cb;
-        return this;
-    };
+    // render.onLoad = function (cb) {
+    //     if (!arguments.length) {
+    //         return config.onLoad;
+    //     }
+    //     config.onLoad = cb;
+    //     return this;
+    // };
 
     render.filter_type = function (type) {
         points
