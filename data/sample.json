@@ -358,13 +358,13 @@
 	}, {
 		"direction": null,
 		"object": "EFO_0001421",
-		"type": "shared-targets",
+		"type": "shared-drugs",
 		"value": 0.277670475937575,
 		"subject": "EFO_0004591"
 	}, {
 		"direction": null,
 		"object": "EFO_0004264",
-		"type": "shared-targets",
+		"type": "shared-diseases",
 		"value": 0.27691217381045485,
 		"subject": "EFO_0004591"
 	}, {

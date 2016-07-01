@@ -43,18 +43,15 @@ var vis = function () {
             .domain([0,1])
             .range([d3.rgb(0,82,163), d3.rgb(182,221,252)]);
 
-
-       
-
         d3.json("../data/sample.json", function(error, resp) {
             var data = resp.data;
             if(data.length>100){
                 var originalData=data
                 data=data.slice(0,95);
             }
-            console.log(data);
-///////////////
-        //sort by type
+            // console.log(data);
+            ///////////////
+            //sort by type
             function createComparator(property) {
                 return function(a, b) {
                     if (a[property] > b[property]) return 1
@@ -81,7 +78,7 @@ var vis = function () {
                         "population":types[i].length/data.length
                     })
             }
-            console.log(dataTypes);
+            // console.log(dataTypes);
             render.update(data, updateScales(radius), dataTypes);
         });
 
@@ -112,31 +109,58 @@ var vis = function () {
             var pie = d3.layout.pie()
                 .sort(null)
                 .value(function(d) { return d.population; });
-
             
             var g = graph.selectAll(".arc")
                 .data(pie(dataTypes))
                 .enter().append("g")
-                .attr("class", "arc");
+                // .attr("class", "arc");
 
-            var arcAngles={};
-              for (i=0; i<5; i++)
-                  g.append("path")
+            for (i=0; i<5; i++){
+                g
+                .append("path")
                   .attr("d", arcs[i])
                   //Give color based on datatype
                   .style("fill", function(d) {
-                        console.log(d.data);//arcAngels[d.startAngle]
                         if(d.data.type=="shared-phenotypes") return giveColor(2)(i*20)
                         if(d.data.type=="shared-targets") return giveColor(0)(i*20)
                         if(d.data.type=="shared-drugs") return giveColor(1)(i*20);
                         if(d.data.type=="shared-diseases") return giveColor(3)(i*20);
                         return giveColor(4)(i*20);            
+                  })
+                  .on("click", function (d) {
+                    // render.update(data, updateScales(radius), dataTypes)
+                    var selected = d3.select(this);
+                    // // var selected = d3.select(this.parentElement.children);
+                    selected
+                    .transition()
+                    .duration(transitionSpeed)
+                    .attr("d", function (d, i) {
+                    var arc = d3.svg.arc()
+                        // .innerRadius(circleScales[i].range()[0] + 0.1) // Have to add 0.1 otherwise it doesn't transition correctly
+                        // .outerRadius(circleScales[i].range()[1] + 0.1) // Have to add 0.1 otherwise it doesn't transition correctly
+                        .startAngle(0)
+                        .endAngle(2*Math.PI);
+                        return arc(d, i);
+                    });
+                    // selected.transition()
+                    //   .duration(750)
+                    //   .call(arcTween);
+                    
+                    // function arcTween(transition) {
+                    //   transition.attrTween("d", function(d) {
+                    //     var interpolate = d3.interpolate(0, 2*Math.PI);
+                    //     return function(t) {
+                    //       d.endAngle = interpolate(t);
+                    //       c
+                    //     };
+                    //   });
                 });
+            }
 
-            g.append("text")
-                  .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
-                  .attr("dy", ".35em")
-                  .text(function(d) { return d.data.type; });
+            // g.append("text")
+            //       .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
+            //       .attr("dy", ".35em")
+            //       .text(function(d) { return d.data.type; });
 
             function type(d) {
               d.population = +d.population;
@@ -275,6 +299,8 @@ var vis = function () {
                 .enter()
                 .append("g")
                 .attr("class", "openTargets_d-d_overview_label selected")
+                // Create the SVG container, and apply a transform such that the origin is the
+                // center of the canvas. This way, we don't need to position arcs individually
                 .attr("transform", function (d) {
                     var grades = d.angle * 360 / (2*Math.PI);
                     var x = graphSize/2 * Math.cos(d.angle);
@@ -338,7 +364,7 @@ var vis = function () {
     }
 
     function tooltip (d) {
-        console.log(d);
+        // console.log(d);
          var obj = {};
          obj.header = d.object;
          obj.rows = [];
