@@ -169,55 +169,6 @@ var vis = function () {
 
 
 
-            ///////////////////
-            // Rings
-           /* var rings = graph
-                .selectAll(".ring")
-                .data(circleScales);
-            
-
-            rings
-                .enter()
-                .append("path")
-                .attr("class", "ring")
-                .attr("fill", function (d) {
-                    return circleColorScale(d.domain()[0]);
-                })
-                .attr("d", function (d) {
-                    var arc = d3.svg.arc()
-                        .innerRadius(d.range()[0])
-                        .outerRadius(d.range()[1])
-                        .startAngle(0)
-                        .endAngle(2*Math.PI);
-                    return arc(d);
-                })
-                .on("click", function (d, i) {
-                    // One ring has been selected
-                    var selected = d3.select(this);
-                    if (selected.classed("zoomed")) {
-                        selected.classed("zoomed", false);
-                        render.update(data, updateScales(radius));
-                    } else {
-                        selected.classed("zoomed", true);
-                        render.update(data, updateScales(radius, d));
-                    }
-                });
-
-
-            rings
-                .transition()
-                .duration(transitionSpeed)
-                .attr("d", function (d, i) {
-                    var arc = d3.svg.arc()
-                        .innerRadius(circleScales[i].range()[0] + 0.1) // Have to add 0.1 otherwise it doesn't transition correctly
-                        .outerRadius(circleScales[i].range()[1] + 0.1) // Have to add 0.1 otherwise it doesn't transition correctly
-                        .startAngle(0)
-                        .endAngle(2*Math.PI);
-                    return arc(d, i);
-                });
-
-*/
-
 
 
             // Calculate coords for each data point
