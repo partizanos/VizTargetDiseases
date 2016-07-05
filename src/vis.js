@@ -43,6 +43,8 @@ var vis = function() {
             .domain([0, 1])
             .range([d3.rgb(0, 82, 163), d3.rgb(182, 221, 252)]);
 
+
+
         d3.json("../data/sample.json", function(error, resp) {
             var data = resp.data;
             if (data.length > 100) {
@@ -95,6 +97,22 @@ var vis = function() {
                     ["#d0743c", "#ff8c00"]
                 ];
 
+                var allColorsExp = {
+                    "shared-targets": [d3.rgb(0, 82, 163), d3.rgb(182, 221, 252)],
+                    "shared-drugs": ["#ff0000", "#ffffcc"],
+                    "shared-phenotypes": ["#ffa500", "#ffe4b2"],
+                    "shared-diseases": ["#4A5D23", "#90EE90"]
+                    // ,
+                    // ["#ffff00", "#ffffb2"],
+                    // ["#d0743c", "#ff8c00"]
+                };
+
+                function circleColorScaleExp(type) {
+                    return d3.scale.linear()
+                        .domain([0, 1])
+                        .range(allColorsExp[type]);
+                }
+
                 function giveColor(i) {
                     return d3.scale.linear()
                         .domain([0, 105])
@@ -132,13 +150,14 @@ var vis = function() {
                         .attr("d", arcs[i])
                         //Give color based on datatype
                         .style("fill", function(d) {
-                            if (d.data.type == "shared-phenotypes") return giveColor(2)(i * 20)
                             if (d.data.type == "shared-targets") return giveColor(0)(i * 20)
                             if (d.data.type == "shared-drugs") return giveColor(1)(i * 20);
+                            if (d.data.type == "shared-phenotypes") return giveColor(2)(i * 20)
                             if (d.data.type == "shared-diseases") return giveColor(3)(i * 20);
                             return giveColor(4)(i * 20);
                         })
                         .on("click", function(d) {
+                            var selDataType=d.data.type
                             d3.selectAll("g path").remove();
                             var rings = graph
                                 .selectAll(".ring")
@@ -149,7 +168,8 @@ var vis = function() {
                                 .append("path")
                                 .attr("class", "ring")
                                 .attr("fill", function(d) {
-                                    return circleColorScale(d.domain()[0]);
+                                    return circleColorScaleExp(selDataType)(d.domain()[0]);
+                                    // return circleColorScale(d.domain()[0]);
                                 })
                                 .attr("d", function(d) {
                                     var arc = d3.svg.arc()
@@ -158,15 +178,6 @@ var vis = function() {
                                         .startAngle(0)
                                         .endAngle(2 * Math.PI);
                                     return arc(d);
-                                })
-                                .transition()
-                                .duration(transitionSpeed)
-                                .attrTween("d", function(d) {
-                                    var interpolate = d3.interpolate(0.1, 2 * Math.PI);
-                                    return function(t) {
-                                        d.endAngle = interpolate(t);
-                                        return arc(d);
-                                    };
                                 })
 
                             rings
@@ -182,18 +193,50 @@ var vis = function() {
                                     }
                                 });
 
-                            rings
-                                .transition()
-                                .duration(transitionSpeed)
-                                .attr("d", function(d, i) {
-                                    var arc = d3.svg.arc()
-                                        .innerRadius(circleScales[i].range()[0] + 0.1) // Have to add 0.1 otherwise it doesn't transition correctly
-                                        .outerRadius(circleScales[i].range()[1] + 0.1) // Have to add 0.1 otherwise it doesn't transition correctly
-                                        .startAngle(0)
-                                        .endAngle(2 * Math.PI);
-                                    return arc(d, i);
-                                });
+                            console.log(rings)
 
+                            // rings
+                            //     .transition()
+                            //     .duration(transitionSpeed)
+                            //     .attrTween("d", function(d) {
+                            //         var interpolate = d3.interpolate(0.1, 2 * Math.PI);
+                            //         return function(t) {
+                            //             d.endAngle = interpolate(t);
+                            //             return arc(d);
+                            //         };
+                            //     })
+
+                            /////////////PROB PART
+                            // rings.transition()
+                            //     .duration(750)
+                            //     .call(arcTween, Math.random() * 2 * Math.PI);
+                            ///////////
+
+
+                            function arcTween(transition, newAngle) {
+                                // debugger;
+                                transition.attrTween("d", function(d) {
+                                    var interpolate = d3.interpolate(0, 2 * Math.PI);
+                                    return function(t) {
+                                        d.endAngle = interpolate(t);
+                                        return arc(d);
+                                    };
+                                });
+                            }
+
+                            // rings
+                            //     .transition()
+                            //     .duration(transitionSpeed)
+                            //     .attr("d", function(d, i) {
+                            //         var arc = d3.svg.arc()
+                            //             .innerRadius(circleScales[i].range()[0] + 0.1) // Have to add 0.1 otherwise it doesn't transition correctly
+                            //             .outerRadius(circleScales[i].range()[1] + 0.1) // Have to add 0.1 otherwise it doesn't transition correctly
+                            //             .startAngle(0)
+                            //             .endAngle(2 * Math.PI);
+                            //         return arc(d, i);
+                            //     });
+
+                            //on background change bring points to foreground
                             d3.selection.prototype.moveToFront = function() {
                                 return this.each(function() {
                                     this.parentNode.appendChild(this);
