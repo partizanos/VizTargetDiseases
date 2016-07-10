@@ -21,13 +21,13 @@ var vis = function() {
         var graphSize = config.size - (labelSize * 2);
         var radius = graphSize / 2;
 
-        var zoom = d3.behavior.zoom()
-            .scaleExtent([1, 10])
-            .on("zoom", zoomed);
+        // var zoom = d3.behavior.zoom()
+        //     .scaleExtent([1, 10])
+        //     .on("zoom", zoomed);
 
-        function zoomed() {
-            graph.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-        }
+        // function zoomed() {
+        //     graph.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        // }
 
         var svg = d3.select(div)
             .append("svg")
@@ -51,8 +51,7 @@ var vis = function() {
                 var originalData = data
                 data = data.slice(0, 95);
             }
-            // console.log(data);
-            ///////////////
+
             //sort by type
             function createComparator(property) {
                 return function(a, b) {
@@ -86,6 +85,17 @@ var vis = function() {
         render.update = function(data, circleScales, dataTypes, graphicMode) {
 
             if (graphicMode == 'pieChart') {
+                dataTypes.sort(function compare(a, b) {
+                    if (a.population > b.population) return -1;
+                    if (a.population < b.population) return 1;
+                    return 0;
+                })
+
+                var colorsExpr = [];
+                for (i = 0; i < 10; i++) {
+                    colorsExpr.push([d3.scale.category20().range()[i * 2], d3.scale.category20().range()[i * 2 + 1]])
+                }
+
 
                 //Give color mechanism depednding on the datatype
                 var allColors = [
@@ -97,15 +107,26 @@ var vis = function() {
                     ["#d0743c", "#ff8c00"]
                 ];
 
-                var allColorsExp = {
-                    "shared-targets": [d3.rgb(0, 82, 163), d3.rgb(182, 221, 252)],
-                    "shared-drugs": ["#ff0000", "#ffffcc"],
-                    "shared-phenotypes": ["#ffa500", "#ffe4b2"],
-                    "shared-diseases": ["#4A5D23", "#90EE90"]
-                    // ,
-                    // ["#ffff00", "#ffffb2"],
-                    // ["#d0743c", "#ff8c00"]
-                };
+
+                var allColorsExp = {};
+                for (i = 0; i < dataTypes.length; i++) {
+                    var colType = dataTypes[i].type
+
+                    allColorsExp[colType] = [
+                        d3.scale.category20().range()[i % 10 * 2],
+                        d3.scale.category20().range()[i % 10 * 2 + 1]
+                    ]
+
+                }
+                // var allColorsExp = {
+                //     "shared-targets": [d3.rgb(0, 82, 163), d3.rgb(182, 221, 252)],
+                //     "shared-drugs": ["#ff0000", "#ffffcc"],
+                //     "shared-phenotypes": ["#ffa500", "#ffe4b2"],
+                //     "shared-diseases": ["#4A5D23", "#90EE90"]
+                //         // ,
+                //         // ["#ffff00", "#ffffb2"],
+                //         // ["#d0743c", "#ff8c00"]
+                // };
 
                 function circleColorScaleExp(type) {
                     return d3.scale.linear()
@@ -119,6 +140,11 @@ var vis = function() {
                         .range([allColors[i][0], allColors[i][1]])
                 }
 
+                function giveArcColor(type) {
+                    return d3.scale.linear()
+                        .domain([0, 105])
+                        .range([allColorsExp[type][0], allColorsExp[type][1]])
+                }
                 //create arcs equivalent of rings
                 var arcs = [];
                 for (var i = 0; i < 5; i++) {
@@ -150,14 +176,10 @@ var vis = function() {
                         .attr("d", arcs[i])
                         //Give color based on datatype
                         .style("fill", function(d) {
-                            if (d.data.type == "shared-targets") return giveColor(0)(i * 20)
-                            if (d.data.type == "shared-drugs") return giveColor(1)(i * 20);
-                            if (d.data.type == "shared-phenotypes") return giveColor(2)(i * 20)
-                            if (d.data.type == "shared-diseases") return giveColor(3)(i * 20);
-                            return giveColor(4)(i * 20);
+                            return giveArcColor(d.data.type)(i * 20)
                         })
                         .on("click", function(d) {
-                            var selDataType=d.data.type
+                            var selDataType = d.data.type
                             d3.selectAll("g path").remove();
                             var rings = graph
                                 .selectAll(".ring")
@@ -248,11 +270,29 @@ var vis = function() {
                         });
                 }
 
-                // g.append("text")
-                //       .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
-                //       .attr("dy", ".35em")
-                //       .text(function(d) { return d.data.type; });
-
+                g.append("text")
+                    // .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
+                    .style("margin", "3px")
+                    .attr("transform", function(d) {
+                        var grades = ((d.startAngle + d.endAngle) / 2) * 180 / Math.PI;
+                        // var x = graphSize / 2 * Math.cos(d.startAngle + d.endAngle) / 2;
+                        // var y = graphSize / 2 * Math.sin(d.startAngle + d.endAngle) / 2;
+                        if (grades > 0 && grades < 180){
+                            var x = (-200 + graphSize) / 2 * Math.cos(((d.startAngle + d.endAngle) / 2) - Math.PI / 2);
+                            var y = (-200 + graphSize) / 2 * Math.sin(((d.startAngle + d.endAngle) / 2) - Math.PI / 2);
+                            return "translate(" + x + "," + y + ") rotate(" + (grades - 90) + ")";
+                        }else{
+                            var x = (-25 + graphSize) / 2 * Math.cos(((d.startAngle + d.endAngle) / 2) - Math.PI / 2);
+                            var y = (-25 + graphSize) / 2 * Math.sin(((d.startAngle + d.endAngle) / 2) - Math.PI / 2);
+                            return "translate(" + x + "," + y + ") rotate(" + (grades - 90+180) + ")";
+                                            }})
+                    .style("font-size", "13px")
+                    .attr("dy", ".35em")
+                    .text(function(d) {
+                        return d.data.type;
+                    });
+                // d3.selectAll('text').moveToFront()
+                // d3.selectAll('text').moveToFront()
                 function type(d) {
                     d.population = +d.population;
                     return d;

@@ -6,7 +6,193 @@
 	{
 		"direction": null,
 		"object": "disease1",
-		"type": "shared-diseases",
+		"type": "diseases1",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases2",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases3",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases4",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases5",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases1",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases2",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases3",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases4",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases5",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases6",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases7",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases8",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases3",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases4",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases5",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases6",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases7",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases8",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases3",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases4",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases5",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases6",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases7",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases8",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases3",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases4",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases5",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases6",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases7",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases8",
+		"value": 0.7139138126389065,
+		"subject": "EFO_0004591"
+	},{
+		"direction": null,
+		"object": "disease1",
+		"type": "diseases9",
 		"value": 0.7139138126389065,
 		"subject": "EFO_0004591"
 	},
