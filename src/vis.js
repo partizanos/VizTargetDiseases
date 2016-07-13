@@ -75,7 +75,8 @@ var vis = function() {
             for (i in types) {
                 dataTypes.push({
                     "type": i,
-                    "population": types[i].length / data.length
+                    "population": types[i].length / data.length,
+                    "count": types[i].length
                 })
             }
             // console.log(dataTypes);
@@ -185,6 +186,8 @@ var vis = function() {
                                 .selectAll(".ring")
                                 .data(circleScales);
 
+                                        drawData()
+
                             rings
                                 .enter()
                                 .append("path")
@@ -289,7 +292,7 @@ var vis = function() {
                     .style("font-size", "13px")
                     .attr("dy", ".35em")
                     .text(function(d) {
-                        return d.data.type;
+                        return d.data.type+" "+d.data.count;
                     });
                 // d3.selectAll('text').moveToFront()
                 // d3.selectAll('text').moveToFront()
@@ -342,8 +345,8 @@ var vis = function() {
                             .endAngle(2 * Math.PI);
                         return arc(d, i);
                     });
-            }
             drawData()
+            }
 
             function drawData() {
                 // Calculate coords for each data point
