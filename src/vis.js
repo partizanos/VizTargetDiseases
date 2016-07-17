@@ -43,8 +43,6 @@ var vis = function() {
             .domain([0, 1])
             .range([d3.rgb(0, 82, 163), d3.rgb(182, 221, 252)]);
 
-
-
         d3.json("../data/sample.json", function(error, resp) {
             var data = resp.data;
             if (data.length > 100) {
@@ -52,93 +50,154 @@ var vis = function() {
                 data = data.slice(0, 95);
             }
 
-            //sort by type
-            function createComparator(property) {
-                return function(a, b) {
-                    if (a[property] > b[property]) return 1
-                    if (a[property] < b[property]) return -1
-                    return 0
-                };
-            }
-            data.sort(createComparator('type'))
-
-            //put same type together
-            var types = {}
-            for (var i = 0; i < data.length; i++) {
-                if (types[data[i].type] == undefined)
-                    types[data[i].type] = []
-                types[data[i].type].push(data[i])
-            }
-
-            // portion of circle per data type
-            var dataTypes = [];
-            for (i in types) {
-                dataTypes.push({
-                    "type": i,
-                    "population": types[i].length / data.length,
-                    "count": types[i].length
-                })
-            }
-            // console.log(dataTypes);
-            render.update(data, updateScales(radius), dataTypes, 'pieChart');
+            render.update(data, updateScales(radius), 'pieChart');
         });
 
-        render.update = function(data, circleScales, dataTypes, graphicMode) {
+        //breadCrumbs definition
+        (function initializeBreadcrumbTrail() {
+            // Add the svg area.
+            var trail = d3.select("#sequence").append("svg:svg")
+                .attr("width", 1200)
+                .attr("height", 50)
+                .attr("id", "trail");
+            // Add the label at the end, for the percentage.
+            // trail.append("svg:text")
+            //   .attr("id", "endlabel")
+            //   .style("fill", "#000");
+        })();
+
+
+        var b = {
+            w: 75,
+            h: 30,
+            s: 3,
+            t: 10
+        };
+        // Generate a string that describes the points of a breadcrumb polygon.
+        function breadcrumbPoints(d, i) {
+            var points = [];
+            points.push("0,0");
+            points.push(b.w + ",0");
+            points.push(b.w + b.t + "," + (b.h / 2));
+            points.push(b.w + "," + b.h);
+            points.push("0," + b.h);
+            if (i > 0) { // Leftmost breadcrumb; don't include 6th vertex.
+                points.push(b.t + "," + (b.h / 2));
+            }
+            return points.join(" ");
+        }
+
+
+        render.update = function(data, circleScales, graphicMode, vizType) {
+
+            function updateBreadcrumbs(nodeArray) {
+
+                // Data join; key function combines name and depth (= position in sequence).
+                var g = d3.select("#trail")
+                    .selectAll("g")
+                    .data(nodeArray, function(d) {
+                        return d.name + d.depth;
+                    });
+
+                // Add breadcrumb and label for entering nodes.
+                var entering = g.enter().append("svg:g");
+
+                entering.append("svg:polygon")
+                    .attr("points", breadcrumbPoints)
+                    .style("fill", function(d) {
+                        // return colors[d.name];
+                        // return '#ff0000'
+                        // giveArcColor(d)(0);
+                        // allColorsExp[d];
+                        return allColorsExp[d.name][1]
+                    })
+                    .on("mouseover", function(d, i) {
+                        // alert("render.update(data, updateScales(radius), 'rings', selDataType)");
+                        render.update(data, updateScales(radius), 'pieChart');
+                    })
+
+                entering.append("svg:text")
+                    .attr("x", (b.w + b.t) / 2)
+                    .attr("y", b.h / 2)
+                    .attr("dy", "0.35em")
+                    .attr("text-anchor", "middle")
+                    .text(function(d) {
+                        return d.name;
+                    });
+
+                // Set position for entering and updating nodes.
+                g.attr("transform", function(d, i) {
+                    return "translate(" + i * (b.w + b.s) + ", 0)";
+                });
+
+                // Remove exiting nodes.
+                // g.exit().remove();
+
+                // // Now move and update the percentage at the end.
+                // d3.select("#trail").select("#endlabel")
+                //     .attr("x", (nodeArray.length + 0.5) * (b.w + b.s))
+                //     .attr("y", b.h / 2)
+                //     .attr("dy", "0.35em")
+                //     .attr("text-anchor", "middle")
+                //     .text(percentageString);
+
+                // // Make the breadcrumb trail visible, if it's hidden.
+                // d3.select("#trail")
+                //     .style("visibility", "");
+
+            }
+
 
             if (graphicMode == 'pieChart') {
+                function createComparator(property) {
+                    return function(a, b) {
+                        if (a[property] > b[property]) return 1
+                        if (a[property] < b[property]) return -1
+                        return 0
+                    };
+                }
+
+                data.sort(createComparator('type'))
+
+                var types = {}
+                for (var i = 0; i < data.length; i++) {
+                    if (types[data[i].type] == undefined)
+                        types[data[i].type] = []
+                    types[data[i].type].push(data[i])
+                }
+                // portion of circle per data type
+                var dataTypes = [];
+                for (i in types) {
+                    dataTypes.push({
+                        "type": i,
+                        "population": types[i].length / data.length,
+                        "count": types[i].length
+                    })
+                }
                 dataTypes.sort(function compare(a, b) {
                     if (a.population > b.population) return -1;
                     if (a.population < b.population) return 1;
                     return 0;
                 })
 
+                //Create colors mapping to data Types
                 var colorsExpr = [];
                 for (i = 0; i < 10; i++) {
                     colorsExpr.push([d3.scale.category20().range()[i * 2], d3.scale.category20().range()[i * 2 + 1]])
                 }
 
-
-                //Give color mechanism depednding on the datatype
-                var allColors = [
-                    [d3.rgb(0, 82, 163), d3.rgb(182, 221, 252)],
-                    ["#ff0000", "#ffffcc"],
-                    ["#ffa500", "#ffe4b2"],
-                    ["#4A5D23", "#90EE90"],
-                    ["#ffff00", "#ffffb2"],
-                    ["#d0743c", "#ff8c00"]
-                ];
-
-
                 var allColorsExp = {};
                 for (i = 0; i < dataTypes.length; i++) {
-                    var colType = dataTypes[i].type
-
-                    allColorsExp[colType] = [
+                    allColorsExp[dataTypes[i].type] = [
                         d3.scale.category20().range()[i % 10 * 2],
                         d3.scale.category20().range()[i % 10 * 2 + 1]
                     ]
-
                 }
-                // var allColorsExp = {
-                //     "shared-targets": [d3.rgb(0, 82, 163), d3.rgb(182, 221, 252)],
-                //     "shared-drugs": ["#ff0000", "#ffffcc"],
-                //     "shared-phenotypes": ["#ffa500", "#ffe4b2"],
-                //     "shared-diseases": ["#4A5D23", "#90EE90"]
-                //         // ,
-                //         // ["#ffff00", "#ffffb2"],
-                //         // ["#d0743c", "#ff8c00"]
-                // };
 
                 function circleColorScaleExp(type) {
                     return d3.scale.linear()
                         .domain([0, 1])
                         .range(allColorsExp[type]);
-                }
-
-                function giveColor(i) {
-                    return d3.scale.linear()
-                        .domain([0, 105])
-                        .range([allColors[i][0], allColors[i][1]])
                 }
 
                 function giveArcColor(type) {
@@ -169,7 +228,6 @@ var vis = function() {
                 var g = graph.selectAll(".arc")
                     .data(pie(dataTypes))
                     .enter().append("g")
-                    // .attr("class", "arc");
 
                 for (i = 0; i < 5; i++) {
                     g
@@ -181,12 +239,12 @@ var vis = function() {
                         })
                         .on("click", function(d) {
                             var selDataType = d.data.type
+                            updateBreadcrumbs([{ name: selDataType}])
+
                             d3.selectAll("g path").remove();
                             var rings = graph
                                 .selectAll(".ring")
                                 .data(circleScales);
-
-                                        drawData()
 
                             rings
                                 .enter()
@@ -194,7 +252,6 @@ var vis = function() {
                                 .attr("class", "ring")
                                 .attr("fill", function(d) {
                                     return circleColorScaleExp(selDataType)(d.domain()[0]);
-                                    // return circleColorScale(d.domain()[0]);
                                 })
                                 .attr("d", function(d) {
                                     var arc = d3.svg.arc()
@@ -211,35 +268,21 @@ var vis = function() {
                                     var selected = d3.select(this);
                                     if (selected.classed("zoomed")) {
                                         selected.classed("zoomed", false);
-                                        render.update(data, updateScales(radius), dataTypes, 'rings');
+                                        updateBreadcrumbs([{ name: 'AAAAAA', depth: 1 }, { name: 'BBBB', depth: 2 }, { name: 'CCC', depth: 3 }])
+
+                                        render.update(data, updateScales(radius), 'rings', selDataType);
                                     } else {
                                         selected.classed("zoomed", true);
-                                        render.update(data, updateScales(radius, d), dataTypes, 'rings');
+                                        updateBreadcrumbs([{ name: 'AAAAAA', depth: 1 }, { name: 'BBBB', depth: 2 }, { name: 'CCC', depth: 3 }])
+
+                                        render.update(data, updateScales(radius, d), 'rings', selDataType);
                                     }
                                 });
 
-                            console.log(rings)
-
-                            // rings
-                            //     .transition()
-                            //     .duration(transitionSpeed)
-                            //     .attrTween("d", function(d) {
-                            //         var interpolate = d3.interpolate(0.1, 2 * Math.PI);
-                            //         return function(t) {
-                            //             d.endAngle = interpolate(t);
-                            //             return arc(d);
-                            //         };
-                            //     })
-
-                            /////////////PROB PART
-                            // rings.transition()
-                            //     .duration(750)
-                            //     .call(arcTween, Math.random() * 2 * Math.PI);
-                            ///////////
+                            drawData(selDataType)
 
 
                             function arcTween(transition, newAngle) {
-                                // debugger;
                                 transition.attrTween("d", function(d) {
                                     var interpolate = d3.interpolate(0, 2 * Math.PI);
                                     return function(t) {
@@ -248,18 +291,6 @@ var vis = function() {
                                     };
                                 });
                             }
-
-                            // rings
-                            //     .transition()
-                            //     .duration(transitionSpeed)
-                            //     .attr("d", function(d, i) {
-                            //         var arc = d3.svg.arc()
-                            //             .innerRadius(circleScales[i].range()[0] + 0.1) // Have to add 0.1 otherwise it doesn't transition correctly
-                            //             .outerRadius(circleScales[i].range()[1] + 0.1) // Have to add 0.1 otherwise it doesn't transition correctly
-                            //             .startAngle(0)
-                            //             .endAngle(2 * Math.PI);
-                            //         return arc(d, i);
-                            //     });
 
                             //on background change bring points to foreground
                             d3.selection.prototype.moveToFront = function() {
@@ -274,34 +305,29 @@ var vis = function() {
                 }
 
                 g.append("text")
-                    // .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
                     .style("margin", "3px")
                     .attr("transform", function(d) {
                         var grades = ((d.startAngle + d.endAngle) / 2) * 180 / Math.PI;
-                        // var x = graphSize / 2 * Math.cos(d.startAngle + d.endAngle) / 2;
-                        // var y = graphSize / 2 * Math.sin(d.startAngle + d.endAngle) / 2;
-                        if (grades > 0 && grades < 180){
+                        if (grades > 0 && grades < 180) {
                             var x = (-200 + graphSize) / 2 * Math.cos(((d.startAngle + d.endAngle) / 2) - Math.PI / 2);
                             var y = (-200 + graphSize) / 2 * Math.sin(((d.startAngle + d.endAngle) / 2) - Math.PI / 2);
                             return "translate(" + x + "," + y + ") rotate(" + (grades - 90) + ")";
-                        }else{
+                        } else {
                             var x = (-25 + graphSize) / 2 * Math.cos(((d.startAngle + d.endAngle) / 2) - Math.PI / 2);
                             var y = (-25 + graphSize) / 2 * Math.sin(((d.startAngle + d.endAngle) / 2) - Math.PI / 2);
-                            return "translate(" + x + "," + y + ") rotate(" + (grades - 90+180) + ")";
-                                            }})
+                            return "translate(" + x + "," + y + ") rotate(" + (grades - 90 + 180) + ")";
+                        }
+                    })
                     .style("font-size", "13px")
                     .attr("dy", ".35em")
                     .text(function(d) {
-                        return d.data.type+" "+d.data.count;
+                        return d.data.type + " " + d.data.count;
                     });
-                // d3.selectAll('text').moveToFront()
-                // d3.selectAll('text').moveToFront()
+
                 function type(d) {
                     d.population = +d.population;
                     return d;
                 }
-
-
 
             } else if (graphicMode == 'rings') {
                 var rings = graph
@@ -334,6 +360,7 @@ var vis = function() {
                             render.update(data, updateScales(radius, d));
                         }
                     });
+
                 rings
                     .transition()
                     .duration(transitionSpeed)
@@ -345,18 +372,24 @@ var vis = function() {
                             .endAngle(2 * Math.PI);
                         return arc(d, i);
                     });
-            drawData()
+                drawData(vizType)
+                    // drawData("diseases1")
             }
 
-            function drawData() {
-                // Calculate coords for each data point
-                // var stepRad = 3.5; // grades
-                var stepRad = 3.8; // grades
-                // var currAngle = 0;
-                var currAngle = 3 * Math.PI / 2 + 0.03;
+            function drawData(type) {
+                var displData = [];
+                for (i in data)
+                    if (data[i].type == type)
+                        displData.push(data[i])
 
-                for (var i = 0; i < data.length; i++) {
-                    var p = data[i];
+                    // Calculate coords for each data point
+                var stepRad = 2 * Math.PI * 360 / displData.length; // grades
+                // var stepRad = 3.5; // grades
+
+                var currAngle = 0;
+
+                for (var i = 0; i < displData.length; i++) {
+                    var p = displData[i];
                     var scale = circleScales[~~((1 - p.value) / 0.2)];
                     var coords = point(scale(1 - p.value), currAngle);
                     p.x = coords[0];
@@ -367,7 +400,7 @@ var vis = function() {
 
                 // Links
                 links = graph.selectAll(".openTargets_d-d_overview_link")
-                    .data(data, function(d) {
+                    .data(displData, function(d) {
                         return d.object + "-" + d.subject;
                     });
                 links
@@ -393,7 +426,7 @@ var vis = function() {
 
                 // Nodes
                 points = graph.selectAll(".openTargets_d-d_overview_node")
-                    .data(data, function(d) {
+                    .data(displData, function(d) {
                         return d.object + "-" + d.subject;
                     });
                 points
@@ -417,14 +450,14 @@ var vis = function() {
 
                 // Labels
                 labels = graph.selectAll(".openTargets_d-d_overview_label")
-                    .data(data, function(d) {
+                    .data(displData, function(d) {
                         return d.object + "-" + d.subject;
                     });
                 labels
                     .enter()
                     .append("g")
                     .attr("class", "openTargets_d-d_overview_label selected")
-                    // Create the SVG container, and apply a transform such that the origin is the
+                    // Create SVG container, and apply a transform such that the origin is the
                     // center of the canvas. This way, we don't need to position arcs individually
                     .attr("transform", function(d) {
                         var grades = d.angle * 360 / (2 * Math.PI);
@@ -539,7 +572,6 @@ var vis = function() {
 
     // private methods
     function select(d) {
-        /*jshint validthis: true */
         var selectNode = this;
         links
             .each(function(l) {
