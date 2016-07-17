@@ -53,44 +53,40 @@ var vis = function() {
             render.update(data, updateScales(radius), 'pieChart');
         });
 
-        //breadCrumbs definition
-        (function initializeBreadcrumbTrail() {
-            // Add the svg area.
-            var trail = d3.select("#sequence").append("svg:svg")
-                .attr("width", 1200)
-                .attr("height", 50)
-                .attr("id", "trail");
-            // Add the label at the end, for the percentage.
-            // trail.append("svg:text")
-            //   .attr("id", "endlabel")
-            //   .style("fill", "#000");
-        })();
 
 
         var b = {
-            w: 75,
+            w: 100,
             h: 30,
             s: 3,
             t: 10
         };
         // Generate a string that describes the points of a breadcrumb polygon.
-        function breadcrumbPoints(d, i) {
-            var points = [];
-            points.push("0,0");
-            points.push(b.w + ",0");
-            points.push(b.w + b.t + "," + (b.h / 2));
-            points.push(b.w + "," + b.h);
-            points.push("0," + b.h);
-            if (i > 0) { // Leftmost breadcrumb; don't include 6th vertex.
-                points.push(b.t + "," + (b.h / 2));
-            }
-            return points.join(" ");
-        }
 
 
         render.update = function(data, circleScales, graphicMode, vizType) {
-
             function updateBreadcrumbs(nodeArray) {
+
+                function breadcrumbPoints(d, i) {
+                    var points = [];
+                    points.push("0,0");
+                    points.push(b.w + ",0");
+                    points.push(b.w + b.t + "," + (b.h / 2));
+                    points.push(b.w + "," + b.h);
+                    points.push("0," + b.h);
+                    if (i > 0) { // Leftmost breadcrumb; don't include 6th vertex.
+                        points.push(b.t + "," + (b.h / 2));
+                    }
+                    return points.join(" ");
+                }
+
+
+                // Add the svg area.
+                var trail = d3.select("#sequence").append("svg:svg")
+                    .attr("width", 1200)
+                    .attr("height", 50)
+                    .attr("id", "trail");
+
 
                 // Data join; key function combines name and depth (= position in sequence).
                 var g = d3.select("#trail")
@@ -129,26 +125,33 @@ var vis = function() {
                 g.attr("transform", function(d, i) {
                     return "translate(" + i * (b.w + b.s) + ", 0)";
                 });
-
-                // Remove exiting nodes.
-                // g.exit().remove();
-
-                // // Now move and update the percentage at the end.
-                // d3.select("#trail").select("#endlabel")
-                //     .attr("x", (nodeArray.length + 0.5) * (b.w + b.s))
-                //     .attr("y", b.h / 2)
-                //     .attr("dy", "0.35em")
-                //     .attr("text-anchor", "middle")
-                //     .text(percentageString);
-
-                // // Make the breadcrumb trail visible, if it's hidden.
-                // d3.select("#trail")
-                //     .style("visibility", "");
-
             }
+
+            // Remove exiting nodes.
+            // g.exit().remove();
+
+            // // Now move and update the percentage at the end.
+            // d3.select("#trail").select("#endlabel")
+            //     .attr("x", (nodeArray.length + 0.5) * (b.w + b.s))
+            //     .attr("y", b.h / 2)
+            //     .attr("dy", "0.35em")
+            //     .attr("text-anchor", "middle")
+            //     .text(percentageString);
+
+            // // Make the breadcrumb trail visible, if it's hidden.
+            // d3.select("#trail")
+            //     .style("visibility", "");
+
+
 
 
             if (graphicMode == 'pieChart') {
+                d3.selectAll("#sequence svg").remove();
+                d3.selectAll("g text").remove();
+                d3.selectAll("line").remove();
+                d3.selectAll("circle").remove();
+
+
                 function createComparator(property) {
                     return function(a, b) {
                         if (a[property] > b[property]) return 1
@@ -239,9 +242,11 @@ var vis = function() {
                         })
                         .on("click", function(d) {
                             var selDataType = d.data.type
-                            updateBreadcrumbs([{ name: selDataType}])
+                            updateBreadcrumbs([{ name: selDataType }])
 
                             d3.selectAll("g path").remove();
+
+
                             var rings = graph
                                 .selectAll(".ring")
                                 .data(circleScales);
@@ -268,12 +273,10 @@ var vis = function() {
                                     var selected = d3.select(this);
                                     if (selected.classed("zoomed")) {
                                         selected.classed("zoomed", false);
-                                        updateBreadcrumbs([{ name: 'AAAAAA', depth: 1 }, { name: 'BBBB', depth: 2 }, { name: 'CCC', depth: 3 }])
 
                                         render.update(data, updateScales(radius), 'rings', selDataType);
                                     } else {
                                         selected.classed("zoomed", true);
-                                        updateBreadcrumbs([{ name: 'AAAAAA', depth: 1 }, { name: 'BBBB', depth: 2 }, { name: 'CCC', depth: 3 }])
 
                                         render.update(data, updateScales(radius, d), 'rings', selDataType);
                                     }
@@ -449,6 +452,7 @@ var vis = function() {
                     .attr("fill", "navy");
 
                 // Labels
+                graph.selectAll(".openTargets_d-d_overview_label").remove()
                 labels = graph.selectAll(".openTargets_d-d_overview_label")
                     .data(displData, function(d) {
                         return d.object + "-" + d.subject;
