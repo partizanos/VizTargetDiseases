@@ -127,8 +127,14 @@ var vis = function() {
                 });
             }
 
+<<<<<<< HEAD
             // Remove exiting nodes.
             // g.exit().remove();
+=======
+            // Calculate coords for each data point
+            var stepRad = 25.2; // grades
+            var currAngle = 0;
+>>>>>>> e6d48e054a30828d3ec322be312de2c31e84e121
 
             // // Now move and update the percentage at the end.
             // d3.select("#trail").select("#endlabel")
