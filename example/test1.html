@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
     <link rel="stylesheet" href="../build/viz_diseases.css" type="text/css"/>
+    <!-- <script src="https://d3js.org/d3.v4.js"></script> -->
     <script src="https://d3js.org/d3.v3.js"></script>
     <script src="../build/viz_diseases.js"></script>
 </head>
@@ -11,11 +12,13 @@
         <option value="shared-targets">Shared targets</option>
         <option value="shared-phenotypes">Shared phenotypes</option>
     </select>
-    <div id="mydiv" style="padding:30px; position:relative"></div>
+    <div id="mydiv" style="padding:30px; position:relative">
+        <div id="sequence"></div>
+    </div>
 
     <script>
     var v = vis()
-        .size(800);
+        .size(700);
 
     v(document.getElementById("mydiv"));
 
