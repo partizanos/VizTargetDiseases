@@ -20,11 +20,15 @@
 
 Having installed the software mentioned above run the following commands in the terminal or the command prompt:
 </br>
-<p <!--style="background-color=#ff6666"-->> Notice: In Windows environment it is required to set the programs mentioned as enviroment variables.
 </p>
 1. git clone https://github.com/partizanos/VizTargetDiseases.git 
 2. cd VizTargetDiseases
 3. npm install
 4. gulp build-browser
+5. (optional) to run the examples run a local webserver 
+e.g. python -m http.serve in the project folder and go to the examples url: localhost:8000/example 
+
+<p <!--style="background-color=#ff6666"-->> Notice: In Windows environment it is required to set the programs mentioned as enviroment variables.
+
 
 
