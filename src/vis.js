@@ -65,6 +65,7 @@ var vis = function() {
 
 
         render.update = function(data, circleScales, graphicMode, vizType) {
+            
             function updateBreadcrumbs(nodeArray) {
 
                 function breadcrumbPoints(d, i) {
@@ -80,13 +81,11 @@ var vis = function() {
                     return points.join(" ");
                 }
 
-
                 // Add the svg area.
                 var trail = d3.select("#sequence").append("svg:svg")
-                    .attr("width", 1200)
-                    .attr("height", 50)
+                    // .attr("width", 1200)
+                    // .attr("height", 50)
                     .attr("id", "trail");
-
 
                 // Data join; key function combines name and depth (= position in sequence).
                 var g = d3.select("#trail")
@@ -101,10 +100,9 @@ var vis = function() {
                 entering.append("svg:polygon")
                     .attr("points", breadcrumbPoints)
                     .style("fill", function(d) {
-                        // return colors[d.name];
-                        // return '#ff0000'
-                        // giveArcColor(d)(0);
-                        // allColorsExp[d];
+                        if(d.name=='Home') {
+                            return '#DCDCDC';
+                        }
                         return allColorsExp[d.name][1]
                     })
                     .on("mouseover", function(d, i) {
@@ -127,36 +125,13 @@ var vis = function() {
                 });
             }
 
-// <<<<<<< HEAD
-//             // Remove exiting nodes.
-//             // g.exit().remove();
-// =======
-//             // Calculate coords for each data point
-//             var stepRad = 25.2; // grades
-//             var currAngle = 0;
-// >>>>>>> e6d48e054a30828d3ec322be312de2c31e84e121
-
-            // // Now move and update the percentage at the end.
-            // d3.select("#trail").select("#endlabel")
-            //     .attr("x", (nodeArray.length + 0.5) * (b.w + b.s))
-            //     .attr("y", b.h / 2)
-            //     .attr("dy", "0.35em")
-            //     .attr("text-anchor", "middle")
-            //     .text(percentageString);
-
-            // // Make the breadcrumb trail visible, if it's hidden.
-            // d3.select("#trail")
-            //     .style("visibility", "");
-
-
-
 
             if (graphicMode == 'pieChart') {
                 d3.selectAll("#sequence svg").remove();
                 d3.selectAll("g text").remove();
                 d3.selectAll("line").remove();
                 d3.selectAll("circle").remove();
-
+                updateBreadcrumbs([{ name: 'Home' }]);
 
                 function createComparator(property) {
                     return function(a, b) {
@@ -244,11 +219,11 @@ var vis = function() {
                         .attr("d", arcs[i])
                         //Give color based on datatype
                         .style("fill", function(d) {
-                            return giveArcColor(d.data.type)(i * 20)
+                            return giveArcColor(d.data.type)(i * 20);
                         })
                         .on("click", function(d) {
-                            var selDataType = d.data.type
-                            updateBreadcrumbs([{ name: selDataType }])
+                            var selDataType = d.data.type;
+                            updateBreadcrumbs([{ name: 'Home', depth: 0},{ name: selDataType, depth: 1 },{ name: selDataType, depth: 2 }]);
 
                             d3.selectAll("g path").remove();
 
