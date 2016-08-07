@@ -105,7 +105,7 @@ var vis = function() {
                         }
                         return allColorsExp[d.name][1]
                     })
-                    .on("mouseover", function(d, i) {
+                    .on("click", function(d, i) {
                         // alert("render.update(data, updateScales(radius), 'rings', selDataType)");
                         render.update(data, updateScales(radius), 'pieChart');
                     })
@@ -117,6 +117,10 @@ var vis = function() {
                     .attr("text-anchor", "middle")
                     .text(function(d) {
                         return d.name;
+                    })
+                    .on("click", function(d, i) {
+                        // alert("render.update(data, updateScales(radius), 'rings', selDataType)");
+                        render.update(data, updateScales(radius), 'pieChart');
                     });
 
                 // Set position for entering and updating nodes.
@@ -223,7 +227,7 @@ var vis = function() {
                         })
                         .on("click", function(d) {
                             var selDataType = d.data.type;
-                            updateBreadcrumbs([{ name: 'Home', depth: 0},{ name: selDataType, depth: 1 },{ name: selDataType, depth: 2 }]);
+                            updateBreadcrumbs([{ name: 'Home', depth: 0},{ name: selDataType, depth: 1 }]);
 
                             d3.selectAll("g path").remove();
 
