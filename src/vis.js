@@ -21,23 +21,12 @@ var vis = function() {
         var graphSize = config.size - (labelSize * 2);
         var radius = graphSize / 2;
 
-        // var zoom = d3.behavior.zoom()
-        //     .scaleExtent([1, 10])
-        //     .on("zoom", zoomed);
-
-        // function zoomed() {
-        //     graph.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-        // }
-
         var svg = d3.select(div)
             .append("svg")
             .attr("width", config.size)
             .attr("height", config.size)
-
-        var graph = svg
             .append("g")
             .attr("transform", "translate(" + (radius + labelSize) + "," + (radius + labelSize) + ")")
-            // .call(zoom);
 
         var circleColorScale = d3.scale.linear()
             .domain([0, 1])
@@ -65,7 +54,7 @@ var vis = function() {
 
 
         render.update = function(data, circleScales, graphicMode, vizType) {
-            
+
             function updateBreadcrumbs(nodeArray) {
 
                 function breadcrumbPoints(d, i) {
@@ -100,7 +89,7 @@ var vis = function() {
                 entering.append("svg:polygon")
                     .attr("points", breadcrumbPoints)
                     .style("fill", function(d) {
-                        if(d.name=='Home') {
+                        if (d.name == 'Home') {
                             return '#DCDCDC';
                         }
                         return allColorsExp[d.name][1]
@@ -195,13 +184,20 @@ var vis = function() {
                 }
                 //create arcs equivalent of rings
                 var arcs = [];
-                for (var i = 0; i < 5; i++) {
+                for (var i = 0; i < 1; i++) {
                     var arc = d3.svg.arc()
-                        .outerRadius(radius - (i * radius / 5))
-                        .innerRadius(radius - (i * radius / 5) - radius / 5);
+                        .outerRadius(radius - (i * radius))
+                        .innerRadius(radius - (i * radius) - radius);
 
                     arcs.push(arc);
                 }
+                // for (var i = 0; i < 5; i++) {
+                //     var arc = d3.svg.arc()
+                //         .outerRadius(radius - (i * radius / 5))
+                //         .innerRadius(radius - (i * radius / 5) - radius / 5);
+
+                //     arcs.push(arc);
+                // }
 
                 var labelArc = d3.svg.arc()
                     .outerRadius(radius - 40)
@@ -213,86 +209,115 @@ var vis = function() {
                         return d.population;
                     });
 
-                var g = graph.selectAll(".arc")
+                // var 
+
+
+
+
+
+                // var g = graph.selectAll(".arc")
+                //     // var g = graph.selectAll(".arc")
+                //     .data(pie(dataTypes))
+                //     .enter().append("g")
+                //     .each(function(d) { this._current = d; });
+
+                // for (i = 0; i < 5; i++) {
+                // for (i = 0; i < 1; i++) {
+                var arc = d3.svg.arc()
+                    .outerRadius(radius)
+                    .innerRadius(0)
+
+                // d3.select("#container")
+                var path = svg
+                    .selectAll("path")
                     .data(pie(dataTypes))
-                    .enter().append("g")
-
-                for (i = 0; i < 5; i++) {
-                    g
-                        .append("path")
-                        .attr("d", arcs[i])
-                        //Give color based on datatype
-                        .style("fill", function(d) {
-                            return giveArcColor(d.data.type)(i * 20);
-                        })
-                        .on("click", function(d) {
-                            var selDataType = d.data.type;
-                            updateBreadcrumbs([{ name: 'Home', depth: 0},{ name: selDataType, depth: 1 }]);
-
-                            d3.selectAll("g path").remove();
-
-
-                            var rings = graph
-                                .selectAll(".ring")
-                                .data(circleScales);
-
-                            rings
-                                .enter()
-                                .append("path")
-                                .attr("class", "ring")
-                                .attr("fill", function(d) {
-                                    return circleColorScaleExp(selDataType)(d.domain()[0]);
-                                })
-                                .attr("d", function(d) {
-                                    var arc = d3.svg.arc()
-                                        .innerRadius(d.range()[0])
-                                        .outerRadius(d.range()[1])
-                                        .startAngle(0)
-                                        .endAngle(2 * Math.PI);
-                                    return arc(d);
-                                })
-
-                            rings
-                                .on("click", function(d, i) {
-                                    // One ring has been selected
-                                    var selected = d3.select(this);
-                                    if (selected.classed("zoomed")) {
-                                        selected.classed("zoomed", false);
-
-                                        render.update(data, updateScales(radius), 'rings', selDataType);
-                                    } else {
-                                        selected.classed("zoomed", true);
-
-                                        render.update(data, updateScales(radius, d), 'rings', selDataType);
-                                    }
-                                });
-
-                            drawData(selDataType)
-
-
-                            function arcTween(transition, newAngle) {
-                                transition.attrTween("d", function(d) {
-                                    var interpolate = d3.interpolate(0, 2 * Math.PI);
-                                    return function(t) {
-                                        d.endAngle = interpolate(t);
-                                        return arc(d);
-                                    };
-                                });
+                    .enter().append("path")
+                    //Give color based on datatype
+                    .attr("fill", function(d, i) {
+                        return allColorsExp[d.data.type][0];
+                    })
+                    .attr("d", arc)
+                    .each(function(d) { this._current = d; }) // store the initial values
+                    .on("click", function(d) {
+                        for (var i in dataTypes) {
+                            if (dataTypes[i].type == d.data.type)
+                                dataTypes[i].population = 1;
+                            else {
+                                dataTypes[i].population = 0;
                             }
+                        }
 
-                            //on background change bring points to foreground
-                            d3.selection.prototype.moveToFront = function() {
-                                return this.each(function() {
-                                    this.parentNode.appendChild(this);
-                                });
+                        path = path.data(pie(dataTypes))
+                            .attr("fill", function(d, i) {
+                                return allColorsExp[(d.data.type)][0];
+                            });
+
+                        path.transition().duration(500).attrTween("d", function(a) {
+                            var i = d3.interpolate(this._current, a)//,
+                                // k = d3.interpolate(arc.outerRadius()(), newRadius);
+                            this._current = i(0);
+                            return function(t) {
+                                return arc(i(t));
+                                // return arc.innerRadius(k(t) / 4).outerRadius(k(t))(i(t));
                             };
-                            d3.selectAll('circle').moveToFront()
-                            d3.selectAll('line').moveToFront()
-
                         });
-                }
+                        // var selDataType = d.data.type;
+                        // updateBreadcrumbs([{ name: 'Home', depth: 0},{ name: selDataType, depth: 1 }]);
 
-                g.append("text")
+                        // d3.selectAll("g path").remove();
+
+
+                        // var rings = graph
+                        //     .selectAll(".ring")
+                        //     .data(circleScales);
+
+                        // rings
+                        //     .enter()
+                        //     .append("path")
+                        //     .attr("class", "ring")
+                        //     .attr("fill", function(d) {
+                        //         return circleColorScaleExp(selDataType)(d.domain()[0]);
+                        //     })
+                        //     .attr("d", function(d) {
+                        //         var arc = d3.svg.arc()
+                        //             .innerRadius(d.range()[0])
+                        //             .outerRadius(d.range()[1])
+                        //             .startAngle(0)
+                        //             .endAngle(2 * Math.PI);
+                        //         return arc(d);
+                        //     })
+
+                        // rings
+                        //     .on("click", function(d, i) {
+                        //         // One ring has been selected
+                        //         var selected = d3.select(this);
+                        //         if (selected.classed("zoomed")) {
+                        //             selected.classed("zoomed", false);
+
+                        //             render.update(data, updateScales(radius), 'rings', selDataType);
+                        //         } else {
+                        //             selected.classed("zoomed", true);
+
+                        //             render.update(data, updateScales(radius, d), 'rings', selDataType);
+                        //         }
+                        //     });
+
+                        // drawData(selDataType)
+
+                        //on background change bring points to foreground
+                        d3.selection.prototype.moveToFront = function() {
+                            return this.each(function() {
+                                this.parentNode.appendChild(this);
+                            });
+                        };
+                        d3.selectAll('circle').moveToFront()
+                        d3.selectAll('line').moveToFront()
+
+                    });
+
+
+                path.append("text")
+                .attr("fill","#fff")
                     .style("margin", "3px")
                     .attr("transform", function(d) {
                         var grades = ((d.startAngle + d.endAngle) / 2) * 180 / Math.PI;
