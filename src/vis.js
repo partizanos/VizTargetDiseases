@@ -27,6 +27,8 @@ var vis = function() {
             .attr("height", config.size)
             .append("g")
             .attr("transform", "translate(" + (radius + labelSize) + "," + (radius + labelSize) + ")")
+            .attr("id", "pieChart")
+
 
         var circleColorScale = d3.scale.linear()
             .domain([0, 1])
@@ -39,6 +41,8 @@ var vis = function() {
                 data = data.slice(0, 95);
             }
 
+            
+            
             render.update(data, updateScales(radius), 'pieChart');
         });
 
@@ -54,7 +58,7 @@ var vis = function() {
 
 
         render.update = function(data, circleScales, graphicMode, vizType) {
-
+            // debugger;
             function updateBreadcrumbs(nodeArray) {
 
                 function breadcrumbPoints(d, i) {
@@ -95,8 +99,24 @@ var vis = function() {
                         return allColorsExp[d.name][1]
                     })
                     .on("click", function(d, i) {
+                        // debugger;
                         // alert("render.update(data, updateScales(radius), 'rings', selDataType)");
-                        render.update(data, updateScales(radius), 'pieChart');
+                        path = path.data(pie(dataTypes))
+                            .attr("fill", function(d, i) {
+                                return allColorsExp[(d.data.type)][0];
+                            });
+
+                        path.transition().duration(500).attrTween("d", function(a) {
+                            var i = d3.interpolate(this._current, a)//,
+                                // k = d3.interpolate(arc.outerRadius()(), newRadius);
+                            this._current = i(0);
+                            return function(t) {
+                                return arc(i(t));
+                                // return arc.innerRadius(k(t) / 4).outerRadius(k(t))(i(t));
+                            };
+                        });
+                        // d3.select('#pieChart').html('');
+                        // render.update(data, updateScales(radius), 'pieChart');
                     })
 
                 entering.append("svg:text")
@@ -239,15 +259,16 @@ var vis = function() {
                     .attr("d", arc)
                     .each(function(d) { this._current = d; }) // store the initial values
                     .on("click", function(d) {
-                        for (var i in dataTypes) {
-                            if (dataTypes[i].type == d.data.type)
-                                dataTypes[i].population = 1;
+                        var tempDataTypes=JSON.parse(JSON.stringify(dataTypes));
+                        for (var i in tempDataTypes) {
+                            if (tempDataTypes[i].type == d.data.type)
+                                tempDataTypes[i].population = 1;
                             else {
-                                dataTypes[i].population = 0;
+                                tempDataTypes[i].population = 0;
                             }
                         }
 
-                        path = path.data(pie(dataTypes))
+                        path = path.data(pie(tempDataTypes))
                             .attr("fill", function(d, i) {
                                 return allColorsExp[(d.data.type)][0];
                             });
@@ -317,9 +338,11 @@ var vis = function() {
 
 
                 path.append("text")
+                // svg.append("text")
                 .attr("fill","#fff")
                     .style("margin", "3px")
                     .attr("transform", function(d) {
+                        // debugger;
                         var grades = ((d.startAngle + d.endAngle) / 2) * 180 / Math.PI;
                         if (grades > 0 && grades < 180) {
                             var x = (-200 + graphSize) / 2 * Math.cos(((d.startAngle + d.endAngle) / 2) - Math.PI / 2);
