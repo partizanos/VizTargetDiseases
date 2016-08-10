@@ -487,8 +487,8 @@ var vis = function() {
                     }
                 });
 
-                var selected = d3.select("#ring0")
-                selected.classed("zoomed", true);
+                // var selected = d3.select("#ring0")
+                // selected.classed("zoomed", true);
 
                 rings
                     .transition()
