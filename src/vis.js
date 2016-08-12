@@ -104,6 +104,35 @@ var vis = function() {
                     .on("click", function(d, i) {
                         // debugger;
                         // alert("render.update(data, updateScales(radius), 'rings', selDataType)");
+                        rings=d3.selectAll("#pieChart .ring")
+                        var lines=d3.selectAll("#pieChart line")
+                        // var labels=d3.selectAll("#pieChart text")
+                        d3.selectAll("#pieChart text").style('opacity', 0);
+                        var circles=d3.selectAll("#pieChart circle")
+
+                        rings.transition()
+                                    // .delay(function(d, i) {
+                                    //     return i * 50; })
+                                    .duration(200)
+                                    .style('opacity', 0);
+
+                        // lines.transition()
+                        //             .duration(3100)
+                        //             .style('opacity', 0);
+                        // labels.transition()
+                        //             .duration(300)
+                        //             .style('opacity', 0);
+                        // circles.transition()
+                        //             .duration(300)
+                        //             .style('opacity', 0);
+                            d3.selectAll("#pieChart line").remove();
+                            // d3.selectAll("#pieChart text").remove();
+                            d3.selectAll("#pieChart .openTargets_d-d_overview_label").remove();
+                            d3.selectAll("#pieChart circle").remove();
+
+                        setTimeout(function(){
+                            d3.selectAll("#pieChart .ring").remove();
+
                         path = path.data(pie(dataTypes))
                             .attr("fill", function(d, i) {
                                 return allColorsExp[(d.data.type)][0];
@@ -118,6 +147,9 @@ var vis = function() {
                                 // return arc.innerRadius(k(t) / 4).outerRadius(k(t))(i(t));
                             };
                         });
+                        d3.selectAll("#pieChart text").transition().duration(600).style('opacity', 1);
+
+                        },700)
                         // d3.select('#pieChart').html('');
                         // render.update(data, updateScales(radius), 'pieChart');
                     })
@@ -256,6 +288,8 @@ var vis = function() {
                     .attr("d", arc)
                     .each(function(d) { this._current = d; }) // store the initial values
                     .on("click", function(d) {
+                                                d3.selectAll("#pieChart text").style('opacity', 0);
+
                         var tempDataTypes = JSON.parse(JSON.stringify(dataTypes));
                         for (var i in tempDataTypes) {
                             if (tempDataTypes[i].type == d.data.type)
