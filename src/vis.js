@@ -285,7 +285,7 @@ var vis = function() {
                                 var selDataType = d.data.type;
                                 updateBreadcrumbs([{ name: 'Home', depth: 0 }, { name: selDataType, depth: 1 }]);
 
-                                d3.selectAll("g path").remove();
+                                // d3.selectAll("g path").remove();
                                 //////////
                                 graph = d3.select("#pieChart")
                                     //////////////
