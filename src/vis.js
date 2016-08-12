@@ -22,6 +22,13 @@ var vis = function() {
         var graphSize = config.size - (labelSize * 2);
         var radius = graphSize / 2;
 
+
+        d3.select(div)
+        .append("div")
+            .attr("id", "sequence")
+            .attr("width", config.size)
+            .attr("height", 30)
+
         var svg = d3.select(div)
             .append("svg")
             .attr("width", config.size)
@@ -29,7 +36,6 @@ var vis = function() {
             .append("g")
             .attr("transform", "translate(" + (radius + labelSize) + "," + (radius + labelSize) + ")")
             .attr("id", "pieChart")
-
 
         var circleColorScale = d3.scale.linear()
             .domain([0, 1])
@@ -80,7 +86,7 @@ var vis = function() {
                 // Add the svg area.
                 var trail = d3.select("#sequence").append("svg:svg")
                     // .attr("width", 1200)
-                    // .attr("height", 50)
+                    .style("height", 30)
                     .attr("id", "trail");
 
                 // Data join; key function combines name and depth (= position in sequence).
