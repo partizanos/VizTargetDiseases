@@ -24,7 +24,7 @@ var vis = function() {
 
 
         d3.select(div)
-        .append("div")
+            .append("div")
             .attr("id", "sequence")
             .attr("width", config.size)
             .attr("height", 30)
@@ -82,10 +82,12 @@ var vis = function() {
                     }
                     return points.join(" ");
                 }
+                d3.selectAll("#trail").remove()
 
                 // Add the svg area.
                 var trail = d3.select("#sequence").append("svg:svg")
                     // .attr("width", 1200)
+                    .style("width", config.size)
                     .style("height", 30)
                     .attr("id", "trail");
 
@@ -93,6 +95,7 @@ var vis = function() {
                 var g = d3.select("#trail")
                     .selectAll("g")
                     .data(nodeArray, function(d) {
+
                         return d.name + d.depth;
                     });
 
@@ -110,17 +113,19 @@ var vis = function() {
                     .on("click", function(d, i) {
                         // debugger;
                         // alert("render.update(data, updateScales(radius), 'rings', selDataType)");
-                        rings=d3.selectAll("#pieChart .ring")
-                        var lines=d3.selectAll("#pieChart line")
-                        // var labels=d3.selectAll("#pieChart text")
+
+
+                        rings = d3.selectAll("#pieChart .ring")
+                        var lines = d3.selectAll("#pieChart line")
+                            // var labels=d3.selectAll("#pieChart text")
                         d3.selectAll("#pieChart text").style('opacity', 0);
-                        var circles=d3.selectAll("#pieChart circle")
+                        var circles = d3.selectAll("#pieChart circle")
 
                         rings.transition()
-                                    // .delay(function(d, i) {
-                                    //     return i * 50; })
-                                    .duration(200)
-                                    .style('opacity', 0);
+                            // .delay(function(d, i) {
+                            //     return i * 50; })
+                            .duration(200)
+                            .style('opacity', 0);
 
                         // lines.transition()
                         //             .duration(3100)
@@ -131,33 +136,36 @@ var vis = function() {
                         // circles.transition()
                         //             .duration(300)
                         //             .style('opacity', 0);
-                            d3.selectAll("#pieChart line").remove();
-                            // d3.selectAll("#pieChart text").remove();
-                            d3.selectAll("#pieChart .openTargets_d-d_overview_label").remove();
-                            d3.selectAll("#pieChart circle").remove();
+                        d3.selectAll("#pieChart line").remove();
+                        // d3.selectAll("#pieChart text").remove();
+                        d3.selectAll("#pieChart .openTargets_d-d_overview_label").remove();
+                        d3.selectAll("#pieChart circle").remove();
 
-                        setTimeout(function(){
-                            d3.selectAll("#pieChart .ring").remove();
+                        d3.selectAll('#sequence g').remove()
 
-                        path = path.data(pie(dataTypes))
-                            .attr("fill", function(d, i) {
-                                return allColorsExp[(d.data.type)][0];
-                            });
+                        updateBreadcrumbs([{ name: 'Home' }]);
+                        setTimeout(function() {
+                                d3.selectAll("#pieChart .ring").remove();
 
-                        path.transition().duration(500).attrTween("d", function(a) {
-                            var i = d3.interpolate(this._current, a) //,
-                                // k = d3.interpolate(arc.outerRadius()(), newRadius);
-                            this._current = i(0);
-                            return function(t) {
-                                return arc(i(t));
-                                // return arc.innerRadius(k(t) / 4).outerRadius(k(t))(i(t));
-                            };
-                        });
-                        d3.selectAll("#pieChart text").transition().duration(600).style('opacity', 1);
+                                path = path.data(pie(dataTypes))
+                                    .attr("fill", function(d, i) {
+                                        return allColorsExp[(d.data.type)][0];
+                                    });
 
-                        },700)
-                        // d3.select('#pieChart').html('');
-                        // render.update(data, updateScales(radius), 'pieChart');
+                                path.transition().duration(500).attrTween("d", function(a) {
+                                    var i = d3.interpolate(this._current, a) //,
+                                        // k = d3.interpolate(arc.outerRadius()(), newRadius);
+                                    this._current = i(0);
+                                    return function(t) {
+                                        return arc(i(t));
+                                        // return arc.innerRadius(k(t) / 4).outerRadius(k(t))(i(t));
+                                    };
+                                });
+                                d3.selectAll("#pieChart text").transition().duration(600).style('opacity', 1);
+
+                            }, 500)
+                            // d3.select('#pieChart').html('');
+                            // render.update(data, updateScales(radius), 'pieChart');
                     })
 
                 entering.append("svg:text")
@@ -166,7 +174,15 @@ var vis = function() {
                     .attr("dy", "0.35em")
                     .attr("text-anchor", "middle")
                     .text(function(d) {
-                        return d.name;
+                        var name;
+                        
+                        if (d.name.length > 11) {
+                            name = d.name.substring(0, 10)+'...';
+                        } else {
+                            name = d.name;
+                        }
+                        return name ;
+                        // return d.name;
                     })
                     .on("click", function(d, i) {
                         // alert("render.update(data, updateScales(radius), 'rings', selDataType)");
@@ -294,7 +310,7 @@ var vis = function() {
                     .attr("d", arc)
                     .each(function(d) { this._current = d; }) // store the initial values
                     .on("click", function(d) {
-                                                d3.selectAll("#pieChart text").style('opacity', 0);
+                        d3.selectAll("#pieChart text").style('opacity', 0);
 
                         var tempDataTypes = JSON.parse(JSON.stringify(dataTypes));
                         for (var i in tempDataTypes) {
@@ -359,10 +375,11 @@ var vis = function() {
 
                                 rings.transition()
                                     .delay(function(d, i) {
-                                        return i * 50; })
+                                        return i * 50;
+                                    })
                                     .duration(100)
                                     .style('opacity', 1);
-                             
+
                                 rings
                                     .on("click", function(d, i) {
                                         // One ring has been selected
