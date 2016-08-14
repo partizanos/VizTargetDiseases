@@ -102,90 +102,39 @@ var vis = function() {
                 // Add breadcrumb and label for entering nodes.
                 var entering = g.enter().append("svg:g");
 
-                entering.append("svg:polygon")
-                    .attr("points", breadcrumbPoints)
-                    .style("fill", function(d) {
-                        if (d.name == 'Home') {
-                            return '#DCDCDC';
-                        }
-                        return allColorsExp[d.name][1]
-                    })
-                    .on("click", function(d, i) {
-                        // debugger;
-                        // alert("render.update(data, updateScales(radius), 'rings', selDataType)");
+                function renderInitialState() {
+                    rings = d3.selectAll("#pieChart .ring")
+                    var lines = d3.selectAll("#pieChart line")
+                        // var labels=d3.selectAll("#pieChart text")
+                    d3.selectAll("#pieChart text").style('opacity', 0);
+                    var circles = d3.selectAll("#pieChart circle")
 
+                    rings.transition()
+                        // .delay(function(d, i) {
+                        //     return i * 50; })
+                        .duration(200)
+                        .style('opacity', 0);
 
-                        rings = d3.selectAll("#pieChart .ring")
-                        var lines = d3.selectAll("#pieChart line")
-                            // var labels=d3.selectAll("#pieChart text")
-                        d3.selectAll("#pieChart text").style('opacity', 0);
-                        var circles = d3.selectAll("#pieChart circle")
+                    // lines.transition()
+                    //             .duration(3100)
+                    //             .style('opacity', 0);
+                    // labels.transition()
+                    //             .duration(300)
+                    //             .style('opacity', 0);
+                    // circles.transition()
+                    //             .duration(300)
+                    //             .style('opacity', 0);
+                    d3.selectAll("#pieChart line").remove();
+                    // d3.selectAll("#pieChart text").remove();
+                    d3.selectAll("#pieChart .openTargets_d-d_overview_label").remove();
+                    d3.selectAll("#pieChart circle").remove();
 
-                        rings.transition()
-                            // .delay(function(d, i) {
-                            //     return i * 50; })
-                            .duration(200)
-                            .style('opacity', 0);
+                    d3.selectAll('#sequence g').remove()
 
-                        // lines.transition()
-                        //             .duration(3100)
-                        //             .style('opacity', 0);
-                        // labels.transition()
-                        //             .duration(300)
-                        //             .style('opacity', 0);
-                        // circles.transition()
-                        //             .duration(300)
-                        //             .style('opacity', 0);
-                        d3.selectAll("#pieChart line").remove();
-                        // d3.selectAll("#pieChart text").remove();
-                        d3.selectAll("#pieChart .openTargets_d-d_overview_label").remove();
-                        d3.selectAll("#pieChart circle").remove();
+                    updateBreadcrumbs([{ name: 'Home' }]);
+                    setTimeout(function() {
+                        d3.selectAll("#pieChart .ring").remove();
 
-                        d3.selectAll('#sequence g').remove()
-
-                        updateBreadcrumbs([{ name: 'Home' }]);
-                        setTimeout(function() {
-                                d3.selectAll("#pieChart .ring").remove();
-
-                                path = path.data(pie(dataTypes))
-                                    .attr("fill", function(d, i) {
-                                        return allColorsExp[(d.data.type)][0];
-                                    });
-
-                                path.transition().duration(500).attrTween("d", function(a) {
-                                    var i = d3.interpolate(this._current, a) //,
-                                        // k = d3.interpolate(arc.outerRadius()(), newRadius);
-                                    this._current = i(0);
-                                    return function(t) {
-                                        return arc(i(t));
-                                        // return arc.innerRadius(k(t) / 4).outerRadius(k(t))(i(t));
-                                    };
-                                });
-                                d3.selectAll("#pieChart text").transition().duration(600).style('opacity', 1);
-
-                            }, 500)
-                            // d3.select('#pieChart').html('');
-                            // render.update(data, updateScales(radius), 'pieChart');
-                    })
-
-                entering.append("svg:text")
-                    .attr("x", (b.w + b.t) / 2)
-                    .attr("y", b.h / 2)
-                    .attr("dy", "0.35em")
-                    .attr("text-anchor", "middle")
-                    .text(function(d) {
-                        var name;
-                        
-                        if (d.name.length > 11) {
-                            name = d.name.substring(0, 10)+'...';
-                        } else {
-                            name = d.name;
-                        }
-                        return name ;
-                        // return d.name;
-                    })
-                    .on("click", function(d, i) {
-                        // alert("render.update(data, updateScales(radius), 'rings', selDataType)");
                         path = path.data(pie(dataTypes))
                             .attr("fill", function(d, i) {
                                 return allColorsExp[(d.data.type)][0];
@@ -200,6 +149,64 @@ var vis = function() {
                                 // return arc.innerRadius(k(t) / 4).outerRadius(k(t))(i(t));
                             };
                         });
+                        d3.selectAll("#pieChart text").transition().duration(600).style('opacity', 1);
+
+                    }, 500)
+
+                }
+
+                entering.append("svg:polygon")
+                    .attr("points", breadcrumbPoints)
+                    .style("fill", function(d) {
+                        if (d.name == 'Home') {
+                            return '#DCDCDC';
+                        }
+                        return allColorsExp[d.name][1]
+                    })
+                    .on("click", function(d, i) {
+                        if (this.parentNode.childNodes[1].innerHTML == "Home")
+
+                            renderInitialState();
+
+
+                        // d3.select('#pieChart').html('');
+                        // render.update(data, updateScales(radius), 'pieChart');
+                    })
+
+                entering.append("svg:text")
+                    .attr("x", (b.w + b.t) / 2)
+                    .attr("y", b.h / 2)
+                    .attr("dy", "0.35em")
+                    .attr("text-anchor", "middle")
+                    .text(function(d) {
+                        var name;
+
+                        if (d.name.length > 11) {
+                            name = d.name.substring(0, 10) + '...';
+                        } else {
+                            name = d.name;
+                        }
+                        return name;
+                        // return d.name;
+                    })
+                    .on("click", function(d, i) {
+                        if (this.innerHTML == "Home")
+                            renderInitialState();
+                        // alert("render.update(data, updateScales(radius), 'rings', selDataType)");
+                        // path = path.data(pie(dataTypes))
+                        //     .attr("fill", function(d, i) {
+                        //         return allColorsExp[(d.data.type)][0];
+                        //     });
+
+                        // path.transition().duration(500).attrTween("d", function(a) {
+                        //     var i = d3.interpolate(this._current, a) //,
+                        //         // k = d3.interpolate(arc.outerRadius()(), newRadius);
+                        //     this._current = i(0);
+                        //     return function(t) {
+                        //         return arc(i(t));
+                        //         // return arc.innerRadius(k(t) / 4).outerRadius(k(t))(i(t));
+                        //     };
+                        // });
                         // render.update(data, updateScales(radius), 'pieChart');
                     });
 
