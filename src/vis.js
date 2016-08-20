@@ -2,6 +2,22 @@
 var tntTooltip = require('tnt.tooltip');
 var d3 = require('d3');
 // var flowerView = require("cttv.flowerView");
+//add necessary css from js so that the user doesn have to explicitely include it
+//if he includes it css is not imported 
+var cssId = 'myCss'; 
+if (!document.getElementById(cssId))
+{
+    var head  = document.getElementsByTagName('head')[0];
+    var link  = document.createElement('link');
+    link.id   = cssId;
+    link.rel  = 'stylesheet';
+    link.type = 'text/css';
+    link.href = "../build/viz_diseases.css";
+    link.media = 'all';
+    head.appendChild(link);
+}
+
+
 
 var vis = function() {
     "use strict";
