@@ -22,6 +22,13 @@ if (!document.getElementById(cssId))
 var vis = function() {
     "use strict";
     var config = {
+        allColorsExp:[],
+        // allColorsExp:[],
+        fontSize:"10px",
+        pointSize:3.5,
+        pointColor:"navy",
+        size: 700,
+        filter: null,
         data: [
 
             {
@@ -43,9 +50,7 @@ var vis = function() {
                 "value": 0.7139138126389065,
                 "subject": "EFO_0004591"
             }
-        ],
-        size: 500,
-        filter: null
+        ]
     };
     var graph;
 
@@ -141,8 +146,24 @@ var vis = function() {
                     colorsExpr.push([d3.scale.category20().range()[i * 2], d3.scale.category20().range()[i * 2 + 1]])
                 }
 
+
+                function shadeColor2(color, percent) {   
+                    var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
+                    return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
+                }
+                // config.allColorsExp;
                 var allColorsExp = {};
-                for (i = 0; i < dataTypes.length; i++) {
+                if(config.allColorsExp.length!=0){
+                    for(i=0; i<config.allColorsExp.length; i++){
+                        allColorsExp[dataTypes[i].type] = [
+                        config.allColorsExp[i],
+                        shadeColor2(config.allColorsExp[i], 0.8)
+                        // d3.scale.category20().range()[i % 10 * 2 + 1],
+                        // d3.scale.category20().range()[i % 10 * 2]
+                    ]
+                    }
+                }
+                for (i = config.allColorsExp.length; i < dataTypes.length; i++) {
                     allColorsExp[dataTypes[i].type] = [
                         d3.scale.category20().range()[i % 10 * 2],
                         d3.scale.category20().range()[i % 10 * 2 + 1]
@@ -312,7 +333,8 @@ var vis = function() {
                                 return "translate(" + x + "," + y + ") rotate(" + (grades - 90 + 180) + ")";
                             }
                         })
-                        .style("font-size", "12px")
+                        // .style("font-size", "12px")
+                        .style("font-size", config.fontSize)
                         .attr("dy", ".35em")
                         .text(function() {
                             return d.data.type + " " + d.data.count;
@@ -442,8 +464,8 @@ var vis = function() {
                     .attr("cy", function(d) {
                         return d.y;
                     })
-                    .attr("r", 3.5)
-                    .attr("fill", "navy");
+                    .attr("r", config.pointSize)
+                    .attr("fill", config.pointColor);
 
                 // Labels
                 graph.selectAll(".openTargets_d-d_overview_label").remove()
@@ -465,7 +487,8 @@ var vis = function() {
                         return "translate(" + x + "," + y + ")";
                     })
                     .append("text")
-                    .style("font-size", "10px")
+                    .style("font-size", config.fontSize)
+                    // .style("font-size", "10px")
                     .style("text-anchor", function(d) {
                         var grades = d.angle * 360 / (2 * Math.PI);
                         if (grades % 360 > 90 && grades % 360 < 275) {
@@ -681,8 +704,8 @@ var vis = function() {
                     .attr("cy", function(d) {
                         return d.y;
                     })
-                    .attr("r", 3.5)
-                    .attr("fill", "navy");
+                    .attr("r", config.pointSize)
+                    .attr("fill", config.pointColor);
 
                 // Labels
                 graph.selectAll(".openTargets_d-d_overview_label").remove()
@@ -704,7 +727,8 @@ var vis = function() {
                         return "translate(" + x + "," + y + ")";
                     })
                     .append("text")
-                    .style("font-size", "10px")
+                    .style("font-size", config.fontSize)
+                    // .style("font-size", "10px")
                     .style("text-anchor", function(d) {
                         var grades = d.angle * 360 / (2 * Math.PI);
                         if (grades % 360 > 90 && grades % 360 < 275) {
@@ -727,13 +751,6 @@ var vis = function() {
                     .on("click", tooltip);
             }
         };
-
-
-
-
-
-
-
 
         if (typeof config.data == "string") {
             d3.json(config.data, function(error, resp) {
@@ -886,6 +903,41 @@ var vis = function() {
             return config.size;
         }
         config.size = size;
+        return this;
+    };
+
+    render.setPieColors = function(color) {
+        if (!arguments.length) {
+            return config.allColorsExp;
+        }
+        config.allColorsExp = color;
+        return this;
+    };
+
+    render.setFontSize = function(size) {
+        if (!arguments.length) {
+            return config.fontSize;
+        }
+        if(typeof size== "number"){
+            size = String(size+'px');
+        }
+        config.fontSize=size;
+        return this;
+    };
+
+    render.setPointSize = function(size) {
+        if (!arguments.length) {
+            return config.pointSize;
+        }
+        config.pointSize = size;
+        return this;
+    };
+
+    render.setPointColor = function(color) {
+        if (!arguments.length) {
+            return config.pointColor;
+        }
+        config.pointColor = color;
         return this;
     };
 
