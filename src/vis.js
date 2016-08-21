@@ -1,6 +1,6 @@
 // var cttvApi = require('cttv.api');
 var tntTooltip = require('tnt.tooltip');
-var d3 = require('d3');
+// var d3 = require('d3');
 // var flowerView = require("cttv.flowerView");
 //add necessary css from js so that the user doesn have to explicitely include it
 //if he includes it css is not imported 
