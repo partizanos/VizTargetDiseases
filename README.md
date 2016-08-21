@@ -5,7 +5,62 @@
 
 
 # VizTargetDiseases
-Welcome 
+
+Welcome the purpose of this project is to provide an interactive and confiurable pieChart-web cpomonent making available to navigate through complicated datasets.
+
+Having a json object (or file) containg data with some minimal information:
+name category-type and value could build an interactive pieChart such as this example:
+http://partizanos.github.io/VizTargetDiseases/example/test1.html
+
+The project was created during the GSOC 2016 and it is used to visualize relationships among biological data (protein target, diseases and phenotypes)
+
+as in this [example](http://partizanos.github.io/VizTargetDiseases/example/test1.html)
+
+
+## Basic Example Use:
+
+Having included the file in dist folder, all you need to do it to include it!
+
+Afterwards you can create can call the web component and pass your data (in the correct format) to be visualized.
+```
+<meta http-equiv="content-type" content="text/html; charset=UTF8">
+
+<script src="pieChart.js"></script>
+
+<div id="myAwesomeDiv"></div>
+
+<script>
+var example_data=[
+            {
+                "type": "diseases2",
+                "value": 100,
+                "subject": "asthma"
+            },{
+                "type": "diseases_2",
+                "value": 200,
+                "subject": "hepatitis"
+            }
+        ];
+
+var v = vis()
+       //if you have you data in a jjson file the realtive path to the fle could be added
+       .read(arr)  
+       //size of div 
+       .size(500)
+        // the red and green colors ro be included inthe pies and then the application chooses addtional colros
+       .setPieColors(["red","#00ff00"])
+       
+
+</script>
+
+```       
+    
+Configuration can be added such as data to be visualized by passing either an array of json objects or a file directly 
+
+
+## Configuration Options:
+
+
 ## Build component:
 
 ### Prerequisites:
@@ -27,20 +82,6 @@ Having installed the software mentioned above run the following commands in the 
 3. ```npm install```
 4. ```gulp build-browser```
 5. (optional) to run the examples run a local webserver e.g. ```python -m http.server``` in the project folder and go to the examples url: ```localhost:8000/example ```
-
-## Basic Example Use:
-
-Having included the file in dist folder, all you need to do it to include it!
-
-Afterwards you can create can call the web component and create an object liek this:
-
- var v = vis();
- 
- you can add add additional configuration, such as data to be visualized by passing either an array 
- 
-## Configuration Options:
-
-
 
 
 
