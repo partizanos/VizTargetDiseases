@@ -47,11 +47,13 @@ Configuration can be added such as data to be visualized by passing either an ar
 
 ## Configuration Options:
 
+set data input,data filter
+
 set colors of labels/data-points/arcs
 
 set Sizes div/text-font/data-points
 
-ste 
+
 
 ## Build component:
 
