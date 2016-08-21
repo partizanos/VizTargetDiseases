@@ -75,6 +75,7 @@ Having installed the software mentioned above run the following commands in the 
 4. ```gulp build-browser```
 5. (optional) to run the examples run a local webserver e.g. ```python -m http.server``` in the project folder and go to the examples url: ```localhost:8000/example ```
 
+##Examples
 example-1
 ![example-1](https://github.com/partizanos/VizTargetDiseases/blob/master/img/gsoc1.png)
 
