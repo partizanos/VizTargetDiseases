@@ -5,6 +5,7 @@ var watch = require('gulp-watch');
 var uglify = require('gulp-uglify');
 var browserify = require('gulp-browserify');
 var sass = require("gulp-sass");
+var concat = require("gulp-concat");
 
 // gulp helper
 var gzip = require('gulp-gzip');
@@ -48,6 +49,16 @@ gulp.task('lint', function() {
 
 gulp.task('watch', function() {
     gulp.watch(['./src/**/*.js','./src/**/scss/*.scss','index.scss'], ['build-browser', 'lint']);
+});
+
+gulp.task('concat', function() {
+
+
+  return gulp.src(['./build/viz_diseases.js','node_modules/d3/d3.js'])
+  // return gulp.src(['src/vis.js','node_modules/d3/d3.js'])
+  // return gulp.src(['src/vis.js',])
+    .pipe(concat('all.js'))
+    .pipe(gulp.dest('./dist/'));
 });
 
 
