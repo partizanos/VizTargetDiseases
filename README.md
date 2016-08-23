@@ -68,7 +68,7 @@ Configuration can be added such as data to be visualized by passing either an ar
 
 ## Configuration Options:
 
-1. set data input
+- set data input
 
 on the creation of the vis object pass the read function along with the path to the file (d3.json is used to make the api call )or directly the json object
 
@@ -95,7 +95,7 @@ var v = vis()
 
 ```
 
-2. set Sizes div/text-font/data-points
+- set Sizes div/text-font/data-points
 ```
     var v = vis()
       //set the div height+width in pixels, minimum is 250
@@ -105,7 +105,7 @@ var v = vis()
 ```
 
 
-3. set colors of data-points/arcs
+- set colors of data-points/arcs
 ```
 var v = vis()
          //pass an array of colors you would like to be included per data type instead of the default colors
