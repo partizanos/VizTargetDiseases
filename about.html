@@ -23,37 +23,79 @@
                 <center>
                     <h2>Welcome to my google summer of code Project 2016 </h2>
                     <!-- <br> -->
-                    <h3>A configurable BioJS visualization component used to analyze and discover relationships in data.</h3>
+                    <p>A configurable BioJS visualization component used to analyze and discover relationships in data.<p>
                         <div id="mydiv" style=" width: 600px;" class="line"></div>
                     <h5>Live demo</h5>
                         
                 </center>
+                <h4>
+                Demonstration Images
+</h4>
+
+Initial layout
+<img src="https://github.com/partizanos/VizTargetDiseases/blob/master/img/gsoc1.png" width="600">
+
+
+On Click focus to a particulart data type, (the "home" breadCrumb on the top left can be used to navigate back using)
+<img src="https://github.com/partizanos/VizTargetDiseases/blob/master/img/gsoc2.png" width="800">
+
+On data point or label click inforamtive tooltip appears
+
+<img src="https://github.com/partizanos/VizTargetDiseases/blob/master/img/gsoc3.png" width="800">
+
+On "bull-ring" click expansion to focus on a particular range of data.
+<img src="https://github.com/partizanos/VizTargetDiseases/blob/master/img/gsoc4.png" width="800">
                 <br>
                 <div style="padding: 175px;">
                     <h4>Project purpose</h4>
-                    <p>The concept of this visualization component is to create summaries of information regarding biological data and ideally serve as a multiprupose tool for data analysis with similar complex structure.</p>
-                    <p>The above pie chart attempts to act as a filter in copmplicated data structures containing multiple types (in our case diseases, protein-targets, shared-phenotypes, drugs). And provide a simple but effective way of  analysis.
+                    <p>The concept of this visualization component is to create summaries of information regarding biological data and ideally serve as a multiprupose tool for data with similar complex structure.</p>
+                    <p>The above pie chart attempts to act as a filter in compplicated data structures containing multiple data types (in our case diseases, protein-targets, shared-phenotypes, drugs). And provide a simple but effective way of  analysis.
                     <p>In the initial state the visualization provides an overview of the differnet data types existing in a data structure. </p>
                     
                     <p>Once a pie piece is clicked a user sees all the underlying data of a specific type. </p>
-                    <p>The home breaadcrumb is used to go back to the initial state a</p>
+                    <p>The home breadcrumb is used to go back to the initial state.</p>
 
-                    <p> The data points depending on their value each which may signifies different the distance from the center will be allocated accordingly. This way with an instant look the user will know data with the highest values and will be able to have an astimation of the ditribution of the values of the data.</p>
+                    <p> Depending on the data values, different distance from the center will be allocated. 
+                    Thiw way with an instant look, the user will get a first perception of the data points with the highest values as well have an immediate estimation for the ditribution inside the dataset.</p>
+                    
                     <p>The five rings seperate intenionally the data into 5 equal pieces depending on their values.
-                    By clicking on the bull rings transition and the clicked one expands to the maximum acting as a filter and focusing on the piece of the selected ditributino.</p>
-                    <p>Lastly the user may click in a specific bullet or label to learn more about an individual object through a small versatile tooltip.</p>
+                    By clicking on the bull rings, the clicked one expands to the maximum, acting as a filter and thus focusing on the piece of the selected ditribution.</p>
+                    <p>Lastly the user may click in a specific data-point or label to learn more about an individual object through a small versatile tooltip which will pop up.</p>
                     
 
-                    The github repository of the web component is located <a href="https://github.com/partizanos/VizTargetDiseases">here</a> with analytical instructions on its use while it has already been uploaded in the npm and biojs registries accordingly.
+                    The github repository of the web component is located <a href="https://github.com/partizanos/VizTargetDiseases">here</a> with analytical instructions on its use while it has already been uploaded in the 
+                    <a href="https://www.npmjs.com/search?q=biojs+piechart">npm</a> and <a href="http://www.biojs.io/d/visualize_piechart">biojs</a> registries accordingly.
+                                  
+                                  
+                                    <br>
 
                     <h4>Experiments & future plans</h4>
-                    <p>In the beginning we had experimented with graphs during our effort to find intuitive ways to analyze realtionships of data. As a result quite some prototypes were made in the process.
-                    One of my future goals of is to combine the two ideas and create graphs where the nodes are somewhat of a more complicated entity than a simple bubble.</p>
-                    <p>Using a pieChart instead of multiple nodes would greatly reduce the complexity of heavy loaded graphs. Although in primitive state for the purpose of this evaluation they were put in <a href="https://github.com/partizanos/earlyExperiments">this</a> repository temporarilly. </p>
+                    <p>During the gsoc we experimented with graphs trying to find intuitive ways to analyze relationships among data. The result of this process led to the implementation of some prorotypes.
+                    One of the future goals of is to combine the two ideas and create graphs where the nodes are somewhat of a more complex entity rather than bubble nodes.</p>
+                    <p>One potential scenario would be to the pieChart instead of multiple nodes would, something that would greatly reduce the complexity of heavy loaded graphs. Although in primitive state for the purpose of this evaluation they were put in <a href="https://github.com/partizanos/earlyExperiments">this</a> repository temporarilly. </p>
+                                    <br>
+
+                    <h4>Project pages and downloads</h4>
+                    <p>
+                       The <b>VizTargetDiseases</b> web component is available with detailed instructions, documetation and examples, from the following sources:
+                        <li>Github pie-Chart module <a href="https://github.com/partizanos/VizTargetDiseases">https://github.com/partizanos/VizTargetDiseases </a>   </li>
+                         <li>NPM registry link <a href="https://www.npmjs.com/search?q=biojs+piechart"> https://www.npmjs.com/search?q=biojs+piechart </a> </li>
+                          <li>BioJS registry link <a href="http://www.biojs.io/d/visualize_piechart"> http://www.biojs.io/d/visualize_piechart </a> </li>
+
+                    </p>
+                    <p>
+                        <b>Experiments</b> (network) are also available:
+                        <li> <a href="https://github.com/partizanos/earlyExperiments">Early experiments</a> https://github.com/partizanos/earlyExperiments.
+                    </p>
+                    
+                    
+                                    <br>
+
                     <h4>Thank note</h4>
                     <p>I would like to thank my mentors Luca Fumis & Miguel Pignatelli for their support and valuable contribution throughout this summer despite their heavy workload and inviting me in the E.B.I. for a User Experience session.
                     I am grateful to the Biojs community for the the great responsivenes and collaborative spirit as well for the rich educational material and their trust which permitted me to contribute to the open-source community which in the future I would like to contribute further since I find this process extremely  educational and creative.
                     Last but not least I would like to thank the organization of GSOC that gives the opportunity and the necessary resources to students to contribute to projects they are passionate about, develop their skills further and contribute to the open-source community.
+                    </p><p>
                     It's been a wonderful summer.      
                     </p>
                 </div>
