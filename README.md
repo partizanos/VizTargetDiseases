@@ -18,11 +18,11 @@ could be used to build an interactive pieChart visualization.
 
 ##Examples
 
-
-In this  #### [live example](http://partizanos.github.io/VizTargetDiseases/example/test1.html)
+###Live example
+In this  [live example](http://partizanos.github.io/VizTargetDiseases/example/test1.html)
  we visualize relationships among different biological data (protein target, diseases and phenotypes)
 
-
+###Demonstration Images
 
 
 Initial layout
