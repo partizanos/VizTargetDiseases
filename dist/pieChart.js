@@ -490,6 +490,7 @@ var tntTooltip = require('tnt.tooltip');
 //add necessary css from js so that the user doesn have to explicitely include it
 //if he includes it css is not imported 
 var cssId = 'myCss'; 
+/*
 if (!document.getElementById(cssId))
 {
     var head  = document.getElementsByTagName('head')[0];
@@ -501,7 +502,7 @@ if (!document.getElementById(cssId))
     link.media = 'all';
     head.appendChild(link);
 }
-
+*/
 
 
 var vis = function() {
