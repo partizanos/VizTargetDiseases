@@ -95,7 +95,7 @@ var v = vis()
 
 ```
 
-set Sizes div/text-font/data-points
+2. set Sizes div/text-font/data-points
 ```
     var v = vis()
       //set the div height+width in pixels, minimum is 250
@@ -105,7 +105,7 @@ set Sizes div/text-font/data-points
 ```
 
 
-set colors of data-points/arcs
+3. set colors of data-points/arcs
 ```
 var v = vis()
          //pass an array of colors you would like to be included per data type instead of the default colors
