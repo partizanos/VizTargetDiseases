@@ -1,5 +1,5 @@
 {
-  "name": "viz_diseases",
+  "name": "visualize_piechart",
   "version": "1.0.0",
   "description": "",
   "keywords":["biojs","pieChart","data-visualization"],
@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/partizanos/VizTargetDiseases.git"
   },
-  "author": "",
+  "author": "dimitris proios",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/partizanos/VizTargetDiseases/issues"
