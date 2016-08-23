@@ -43,12 +43,12 @@ On "bull-ring" click expansion to focus on a particular range of data.
 ## Basic Example Use:
 
 
-Having included the file in dist folder, you can create can call the web component and pass your data 
+Having included the file in dist folder and having the css in the build folder (by default vis.js is including it otherwise it has to be explicitely included), you can create can call the web component and pass your data 
 (in the correct format) to be visualized.
 ```
 <meta http-equiv="content-type" content="text/html; charset=UTF8">
 
-<script src="pieChart.js"></script>
+<script src="./dist/pieChart.js"></script>
 
 <div id="myAwesomeDiv"></div>
 
