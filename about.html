@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<meta http-equiv="content-type" content="text/html; charset=UTF8">
+
+<head>
+    <!-- <link rel="stylesheet" href="../build/viz_diseases.css" type="text/css"/> -->
+    <!-- <script src="https://d3js.org/d3.v4.js"></script> -->
+    <!-- <script src="https://d3js.org/d3.v3.js"></script> -->
+    <!-- <script src="../build/viz_diseases.js"></script> -->
+    <script src="/dist/pieChart.js"></script>
+    <style type="text/css">
+    div.inline {
+        float: left;
+    }
+     .line{
+ border-style: solid;
+    border-width: medium;
+}
+    .clearBoth {
+        clear: both;
+    }
+    </style>
+</head>
+
+<body>
+    <!--     <select name="types" id="changeType">
+        <option value="">All</option>
+        <option value="shared-targets">Shared targets</option>
+        <option value="shared-phenotypes">Shared phenotypes</option>
+    </select> -->
+
+                <center>
+                    <h2>Welcome to my google summer of code Project 2016 </h2>
+                    <!-- <br> -->
+                    <h3>A configurable BioJS visualization component used to analyze and discover relationships in data.</h3>
+                        <div id="mydiv" style=" width: 600px;" class="line"></div>
+                    <h5>Live demo</h5>
+                        
+                </center>
+                <br>
+                <div style="padding: 150px;">
+                    <h4>Project purpose</h4>
+                    <p>The concept of this visualization component is to create summaries of information regarding biological data and ideally serve as a multiprupose tool for data with similar complex structure.</p>
+                    <p>The above pie chart attempts to act as a filter in copmlicated data structures containing multiple types (in our case diseases, protein-targets, shared-phenotypes, drugs). And provide a simple but effective way of  analysis.
+                    <p>In the initial state the visualization provides an overview of the differnet data types existing in a data structure. </p>
+                    
+                    <p>Once clicked a user sees all the underlying data of a specific type. </p>
+
+                    <p> The data points depending on their value each which may signifies different the distance from the center will be allocated accordingly. This way with an instant look the user will know data with the highest values and will be able to have an astimation of the ditribution of the values of the data.</p>
+                    <p>The five rings seperate intenionally the data into 5 equal pieces depending on their values.
+                    By clicking on the bull rings transition and the clicked one expands to the maximum acting as a filter and focusing on the piece of the selected ditributino.</p>
+                    <p>Lastly the user may click in a specific bullet or label to learn more about an individual object through a small versatile tooltip.</p>
+                    
+
+                    The github repository of the web component is located <a href="https://github.com/partizanos/VizTargetDiseases">here</a> with analytical instructions on its use while it has already been uploaded in the npm and biojs registries accordingly.
+
+                    <h4>Experiments & future plans</h4>
+                    <p>In the beginning we had experimented with graphs during our effort to find intuitive ways to analyze realtionships of data. As a result quite some prototypes were made in the process.
+                    One of the future goals of the project is to combine the two ideas and create graphs where the nodes are somewhat a more complicated entity than a simple bubble.
+                    </p><!-- 
+                    <p>Using pies in the positions of multiple nodes would greatly reduce the complexity of complicated graphs, so the experiments done are not to be abandonned. For the purpose of this evaluation they were put in <a href="https://github.com/partizanos/earlyExperiments">this</a> repository temporarilly. </p> -->
+                    <p>Using pies in the positions of multiple nodes would greatly reduce the complexity of complicated graphs, so the experiments done are not to be abandonned. For the purpose of this evaluation they were put in <a href="https://github.com/partizanos/earlyExperiments">this</a> repository temporarilly. </p>
+                    <h4>Thank note</h4>
+                    <p>I would like to thank my mentors Luca Fumis & Miguel Pignatelli for their support and valuable contribution throughout this summer despite their heavy workload, as well as the EBi institue which permitted me to participate in a User Expereience session in their headquarters in Cambridge.
+                    The Biojs community for the rich educational material and their trust which permitted me to contribute to the open-source community which in the future I would like to contribute further since I find this process extremely  educational and creative.
+                    Last but not least I would like to thank the organization of GSOC that gives the opportunity and the necessary resources to students to contribute to projects they are passionate about, develop their skills further and contribute to the open-source community.
+                    It's been a wonderful summer.      
+                    </p>
+                </div>
+
+<!--              <center style="padding: 150px;">
+                 
+                 <div class="line inline" >
+                    <a href="example/d3_prototype.html"><img src="img/gsocEARLY.png"></a>
+                </div>
+             </center> -->
+               
+        <script>
+        data = [
+
+            {
+                "direction": null,
+                "object": "disease1",
+                "type": "diseases1",
+                "value": 0.7139138126389065,
+                "subject": "EFO_0004591"
+            }, {
+                "direction": null,
+                "object": "disease1",
+                "type": "diseases3",
+                "value": 0.7139138126389065,
+                "subject": "EFO_0004591"
+            }
+        ]
+
+        var v = vis()
+            .size(600)//250-1000
+            // .size(2000)
+            // .size(250)
+            // .size(450)
+            // .setPointSize(2)
+            // .setPieColors(["#ff0000"])
+            // .setPointColor('#fff')
+            // .setPointColor('rgb(200,132,200)')
+            // .setFontSize('10px')
+            .read("../data/sample.json");
+        // .read(data);
+
+        v(document.getElementById("mydiv"));
+
+        // d3.select("#changeType")
+        //     .on("change", function () {
+        //         console.log(this.value);
+        //         v.filter_type(this.value);
+        //     })
+
+        // setTimeout(function () {
+        //     v.filter_type("shared-phenotype");
+        // }, 1000);
+        //
+        // setTimeout(function () {
+        //     v.filter_type(null);
+        // }, 2000);
+        </script>
+</body>

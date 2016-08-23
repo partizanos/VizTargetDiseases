@@ -1,4 +1,3 @@
-@charset "UTF-8";
 .circle {
   stroke-width: 1px; }
 
@@ -92,16 +91,3 @@ div .tnt_tooltip_active {
     cursor: move; }
   .tnt_zmenu th:active {
     cursor: move; }
-
-.petal {
-  stroke: none;
-  stroke-width: 0px; }
-
-.stitches {
-  stroke: #ccc;
-  stroke-width: 0.25px;
-  /*stroke-dasharray: 4 5;*/
-  fill: none; }
-
-.cttv_petal_label  {
-  pointer-events: none; }

@@ -7,7 +7,11 @@
     <!-- <script src="https://d3js.org/d3.v4.js"></script> -->
       <!-- <script src="https://d3js.org/d3.v3.js"></script> -->
      <!-- <script src="../build/viz_diseases.js"></script> -->
-    <script src="../dist/all.js"></script>
+    <script src="../dist/pieChart.js"></script>
+    <style type="text/css">
+div.inline { float:left; }
+.clearBoth { clear:both; }
+</style>
 </head>
 
 <body>
@@ -16,7 +20,17 @@
         <option value="shared-targets">Shared targets</option>
         <option value="shared-phenotypes">Shared phenotypes</option>
     </select> -->
-    <div id="mydiv" >
+    <div id="mydiv" class="inline">
+    </div>
+     <div id="list" class="inline">
+    <br>
+                Configuration Methods List
+                <li>change arcs Colors</li>
+                <p> Example I will add red in my selection of colors with
+                v</p>
+                <li></li>
+                <li></li>
+                <li></li>
     </div>
 
     <script>
@@ -49,7 +63,7 @@
         // .setFontSize('10px')
         .read("../data/sample.json");
         // .read(data);
-
+    
     v(document.getElementById("mydiv"));
 
     // d3.select("#changeType")

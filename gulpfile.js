@@ -57,7 +57,7 @@ gulp.task('concat', function() {
   return gulp.src(['./build/viz_diseases.js','node_modules/d3/d3.js'])
   // return gulp.src(['src/vis.js','node_modules/d3/d3.js'])
   // return gulp.src(['src/vis.js',])
-    .pipe(concat('all.js'))
+    .pipe(concat('pieChart.js'))
     .pipe(gulp.dest('./dist/'));
 });
 

@@ -63,6 +63,8 @@ var vis = function() {
     //     .secret("2J23T20O31UyepRj7754pEA2osMOYfFK");
     var dataTypes;
     var render = function(div) {
+
+        d3.select(div).html("");
         var graphSize = config.size - (labelSize * 2);
         var radius = graphSize / 2;
 
