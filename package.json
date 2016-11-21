@@ -37,6 +37,6 @@
     "cttv.spinner": "0.0.0",
     "es6-promise": "^3.2.1",
     "rsvp": "^3.2.1",
-    "tnt.tooltip": "^0.1.0"
+    "tnt.tooltip": "^0.2.0"
   }
 }
