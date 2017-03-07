@@ -1,6 +1,6 @@
 {
   "name": "viz_diseases",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "",
   "main": "index.js",
   "scripts": {
